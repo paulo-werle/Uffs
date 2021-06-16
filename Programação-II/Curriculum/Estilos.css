@@ -1,0 +1,126 @@
+/* FORMATAÇOES GERAIS */
+
+body{
+	font-family: arial, sans-sarif, monospace;
+	margin: 0;
+}
+header,footer{
+	background-color: #808080;
+}
+nav{
+	background-color: #D3D3D3;
+}
+main{
+	background-color: #808080;
+}
+header,footer,nav,main{
+	padding: 10px
+}
+h1,footer{
+	color: #FFFFFF;
+}
+p, header, h2{
+	color: white
+}
+
+/* LINKS */
+
+a{
+	color: #FFFFFF;
+}
+a:visited{
+	color: #000000;
+}
+a:actived{
+	color: #000000;
+}
+a:hover{
+	color: #FFFFFF;
+}
+
+/* MENU */
+nav ul li{
+	display: inline;
+	padding: 15px;
+	text-transform: uppercase;
+}
+
+/* TABELAS */
+table, th, td{
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+tr{
+	background-color: #FFFFFF;
+}
+th:nth-child(even) {
+		background-color: #D3D3D3;
+}
+th:nth-child(add) {
+		background-color: #66CDAA;
+}
+
+/*FORMULARIOS*/
+
+input[type="text"],input[type="email"],input[type="tel"],select,textarea{
+	border: 2px solid black;
+	margin: 10px 0px;
+	border-radius: 15px;
+	padding: 5px;
+	background-color: white;
+	color: black;
+	font-family: monospace;
+}
+input[type="text"]:focus,input[type="email"]:focus,input[type="tel"]:focus,select:focus,textarea:focus{
+	border: 2px solid white;
+	background-color: black;
+	font-weight: bold;
+}
+
+input[type="submit"],input[type="reset"]{
+	background-color: white;
+	color: black;
+	width: 150px;
+	height: 40px;
+	font-weight: bold;
+	border-radius: 15px;
+}
+input[type="submit"]:hover,input[type="reset"]:hover{
+	background-color: white;
+	color: black;
+}
+.rotulo{
+	width: 140px;
+	display: inline;
+	text-align: right
+}
+fieldset{
+	width: 600px;
+	border: 2px solid black;
+}
+
+/*PORTIFOLIO*/
+figure{
+	float: left;
+}
+figure img{
+	width:200px;
+	height:150px;
+}
+figure img:hover{
+	box-shadow: 5px 5px 10px white;
+	transform: scale(1.2) rotate(-5deg);
+	transition: 0.5s;
+}
+#gostou {
+	clear: left;
+}
+main img:hover{
+	box-shadow: 5px 5px 10px white;
+	transform: scale(1.2) rotate(-5deg);
+	transition: 0.5s;
+	align-items: center
+}
+li{
+	color: black
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<title>Curriculum</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="Estilos.css">
+		<style>
+		table, th, td {
+			border: 0px solid black;
+		}
+	</style>
+</head>
+<body>
+
+	<header>
+	<h1> <a href="https://lh3.googleusercontent.com/-GRWd2sx53eE/W9dn3QCfX6I/AAAAAAAABOw/jbHwHefHgkMr4l4rIGUkFCir7JvHzwcngCJoC/w530-h514-n-rw/3299bc76-b3d1-43b8-9ba3-4de1e6378626"> Paulo Eduardo Rodrigues Werle </a></h1>
+	<p>#DESEMPREGADO</p>
+	</header>
+
+		<nav>
+			<ul>
+				<li> <a href="index.html"> Pagina Inicial </a> </li>
+				<li> <a href="Curriculum.html"> Curriculum </a></li>
+				<li> <a href="Projetos/portifolio.html"> Portifólio </a></li>
+				<li> <a href="Temas.html"> Tema de Interesse </a></li>
+				<li> <a href="Contatos.html"> Contato </a></li>
+			</ul>
+		</nav>
+
+	<main>
+		<h2>Contato</h2>
+			<details>
+				<summary>Ver endereço Completo</summary>
+				<p> Rua XYZ, nº 123, Bairro Centro, Chapeco-SC</p>
+			</details>
+
+
+
+		<form method="get">
+			<div>
+				<label for="nome">Nome completo:</label>
+				<input type="text" name="nome" id="nome" size="20" class="rotulo">
+			</div>
+			<div>
+				<label for="email">E-mail</label>
+				<input type="email" name="email" id="email" size="20" maxlength="50" class="rotulo">
+			</div>
+			<div>
+				<label for="telefone">Telefone</label>
+				<input type="tel" name="telefone" id="telefone" size="20" maxlength="50" class="rotulo">
+			</div>
+
+			<fieldset>
+				<legend>Perfil:</legend>
+
+					<label><input type="radio" name="perfil" value="0">Estudante</label><br>
+
+					<label><input type="radio" name="perfil" value="1">Profissional de TI</label><br>
+
+					<label><input type="radio" name="perfil" value="2">Outros</label><br>
+
+			</fieldset>
+			<br>
+
+			<label>Assunto: <select name="assunto">
+				<option value="0">Selecione</option>
+				<option value="1">Orçamento</option>
+				<option value="2">Duvidas</option>
+				<option value="3">Criticas</option>
+				<option value="4">Sugestões</option>
+			</select></label>
+			<br>
+			<br>
+
+
+			<fieldset>
+				<legend>Horario Preferencial para Contato:</legend>
+				<label><input type="checkbox" name="contatoM">Manhã</label><br>
+				<label><input type="checkbox" name="contatoT">Tarde</label><br>
+				<label><input type="checkbox" name="contatoN">Noite</label><br>
+			</fieldset>
+
+			<div>
+				<label for="msg"> Mensagem: </label><br>
+				<textarea name="msg" id="msg" rows="10" cols="40"> </textarea>
+			</div>
+			<div>
+				<input type="submit" name="botao" value="Confirmar">
+				<input type="reset" name="reset" value="Limpar Campos">
+			</div>
+		</form>
+		<br>
+
+		<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113640.61377691016!2d-52.769783356977904!3d-27.11633032960149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94fb4b2bbbd96a4b%3A0x5871f4d6809cb67e!2sUniversidade+Federal+da+Fronteira+Sul%2C+Campus+Chapec%C3%B3!5e0!3m2!1spt-BR!2sbr!4v1554160316735!5m2!1spt-BR!2sbr" width="600" height="450" style="border:0" allowfullscreen></iframe>
+
+	</main>
+	<footer>
+		<p>Todos os Direitos reservados &copy; </p>
+	</footer>
+</body>
+</html>

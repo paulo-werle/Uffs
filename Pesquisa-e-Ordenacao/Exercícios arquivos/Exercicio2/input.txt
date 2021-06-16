@@ -1,0 +1,10 @@
+Camiseta - 1 - 49.90 
+Calça - 4 - 89.90
+Shorts - 2 - 89.90
+Chinelo - 1 - 20.00
+Casaco - 7 - 220.00
+Tenis - 5 - 250.00 
+Saia - 3 - 69.90
+Sapato - 2 - 79.90 
+Moletom - 6 - 120.00
+Bermuda - 4 - 69.90

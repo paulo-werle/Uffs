@@ -1,0 +1,163 @@
+================
+v3.62 2012-March
+================
+* Logic2Logic:
+    - GUI improvements on Compare Functions tool;
+    - Undo/Redo;
+* Logic Equivalence:
+    - Functions are padded with zeros automatically;
+    - Synchronized scrollbars of truth tables;
+    - Background thread when running algorithm;
+* Logic Probability:
+    - Minor GUI changes;
+    - Background thread;
+* Karnaugh Map tools:
+    - 'Minimize Expression' and 'Count Literals' with new GUI and background threads;
+    - Random function;
+* KM Teaching Mode:
+    - Revised and improved some exercises (use don't-cares for example);
+* SOP&POS:
+    - Editable output;
+    - Background thread;
+* Exclusive-OR:
+    - Minor GUI changes;
+* Factorization:
+    - Minor GUI changes;
+* Applet:
+    - Full version;
+
+================
+v3.61 2011-09-22
+================
+- Faster Quine-McCluskey algorithm;
+- Better random functions for the exercises of teaching mode;
+- Some improvements to "Cube Quiz" exercise;
+
+================
+v3.60 2011-06-30
+================
+- Update in the Quine-McCluskey minimization algorithm;
+- Update in Teaching Mode: the exercises that define a function on the Karnaugh
+map now allow to load a function;
+- GUI improvements (mostly on Karnaugh Map module):
+    * Covering table: changed the way selected primes are shown in the Karnaugh
+    map: added button 'Show primes';
+    * Exercises/Teaching Mode now can be called from the Karnaugh Map module;
+    * New 'Tools' Menu with functions 'Minimize Expression' and 'Count Literals';
+    * Changed size of the fonts of the variables at Karnaugh map;
+    * Changed names of some internal windows;
+    * New About
+- Logic2Logic: New templates
+
+================
+v3.56 2010-11-11
+================
+- Karnaugh Map fix: the variables of the Karnaugh Map were not being loaded
+from the function (was using default variables);
+- The function of the Karnaugh Map now can be saved in any of the available formats;
+- SOP/POS module fix: the covering table was not being displayed correctly;
+- SOP/POS module fix: some messages were misleading;
+- SOP/POS module update: independant commands;
+- Mux-Based: fixed output to use default format (n = !, . = *);
+- The "Resynthesize" option of the Covering Table now allows to set the name of the variables;
+- Simplified exception messages;
+
+================
+v3.55 2010-09-14
+================
+- Logic2Logic version 2.04
+- SOP/POS module updates
+- Teaching module updates
+- Worker threads
+- Minor GUI updates
+
+================
+v3.54 2010-08-20
+================
+- Factorization was disabled in Karnaugh Map module, because can be slow for some functions
+- Changed output of Factorization module: literal count, timer
+- Added Worker thread in Factorization module
+- Singleton modules
+- Minor GUI updates
+
+================
+v3.53 2010-08-19
+================
+- Changed 'Empty function' message to 'Constant 0' and showing data
+- Showing minimization steps when function is 'Constant 1'
+- Mux-based fix: must not show factorized function
+- Teaching mode: 'Select Cube' renamed to 'Implicant Cube'
+
+================
+v3.52 2010-08-10
+================
+- Teaching mode updates
+- Minor GUI updates
+
+================
+v3.51 2010-07-27
+================
+- New applet using Java Deployment Toolkit
+- Logic2Logic version 2.02
+- Minor GUI updates
+
+==========
+2010-06-25
+==========
+- GUI improvements
+
+==========
+2010-06-22
+==========
+- New version of Logic2Logic module (better parser, better data structures, new templates)
+- Karnaugh Map with better interface
+- New version of SOP & POS module
+- New version of Probabilities module
+- New module: Factorization
+- New module: Exclusive-Or
+- New BDD visualization using Prefuse Visualization Toolkit
+- Bug fixes
+- Automatic class test
+
+==========
+2009-11-09
+==========
+- New Quine-McCluskey implementation
+- EXOR algorithm
+- Major GUI changes: internal frames, new design
+- Command line
+- Primes Chart GUI (Covering Table) is much faster now with a new implementation
+- Karnaugh map: RESET when changing number of variables or loading function
+- Karnaugh map: new Karnaugh Map size (font size/cell size)
+- Karnaugh map: different colors for different logic values
+- Karnaugh map: new placement of the combo boxes of the variables
+- SOP/POS changes
+- Teaching mode: fixed some bugs
+
+==========
+2009-09-21
+==========
+- SOP/POS reactivated
+- New factorization
+- Adding file confirmation in some dialogs that did not ask before overwriting files
+
+==========
+2009-08-24
+==========
+- Logic equivalence: function windows must keep the contents when closed and reopened.
+- Logic2Logic equations: can have spaces in equation
+
+==========
+2009-07-27
+==========
+- BDD viewer changed to new version
+- New window system
+- Graphical interface changes
+
+==========
+2009-03-16
+==========
+- Minor bug fixes
+- Renaming variables is now ok.
+- New license v1.1
+- SOP/POS temporarily disabled
