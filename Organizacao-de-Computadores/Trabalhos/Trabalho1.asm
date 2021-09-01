@@ -3,7 +3,7 @@
   board: .space  400
   board_size: .word 10
   quantity: .asciz "Informe a quantidade de embarações: "
-  data: .asciz "Informe os dados do %d° barco: " 
+  data: .asciz "Informe os dados do barco: "
 
   # Anotações
   # lw s1, board_size                     # BoardSize -> s1 = board_size
@@ -61,36 +61,89 @@
   ########## novoTabuleiro ##########
 
   ########## insereEmbarcacoes ##########
-  insereEmbarcacoes:
+    insereEmbarcacoes:
+      addi t0, zero, 1                          # current -> t0 = 1
+      addi t1, zero, 1                          # quantity -> t1 = 1
+    insereEmbarcacoesWhile:
+      bge t1, t0, insereEmbarcacoesCorpoWhile   # quantity >= current
+      j insereEmbarcacoesFimWhile
+    insereEmbarcacoesCorpoWhile:
+      addi a4, zero, 0                          # angle -> a4 = 1
+      addi a5, zero, 4                          # length -> a5 = 5
+      addi a6, zero, 2                          # row -> a6 = 5
+      addi a7, zero, 7                          # col -> a7 = 5
 
-    la a0, quantity                           # Define mensagem de quantidade
-    li a7, 4                                  # Define paramentro do ecall
-    ecall                                     # Chama SO
-    li a7, 5                                  # Define paramentro do ecall
-    ecall                                     # Chama SO
-    add t0, zero, a0                          # quantity -> t0
+      add t6, zero, ra                          # Salva endereço de retorno atual
+      jal validaInsercoes                       # Faz validações
+      add ra, zero, t6                          # Ajusta retorno
 
-    addi t1, zero 1                           # current -> t1 = 1
-
-    
-  insereEmbarcacoesWhile:
-    bge t0, t1, insereEmbarcacoesCorpoWhile   # quantity >= current
-    j insereEmbarcacoesFimWhile
-  insereEmbarcacoesCorpoWhile:
-    la a0, data                               # Define mensagem de quantidade
-    li a7, 4                                  # Define paramentro do ecall
-    ecall                                     # Chama SO
-
-    li a7, 5                                  # Define paramentro do ecall
-    ecall                                     # Chama SO
-    add t1, zero, a0                          # angle -> t0
-    
-    j insereEmbarcacoesWhile                  # Vai para condição
-  insereEmbarcacoesFimWhile:
-
-    ret
+      addi t0, t0, 1                            # current++
+      j insereEmbarcacoesWhile                  # Vai para condição
+    insereEmbarcacoesFimWhile:
+      ret
 
   ########## insereEmbarcacoes ##########
+
+  ########## validaInsercoes ##########
+    validaInsercoes:
+      lw t2, board_size                         # board_size -> t2
+      blt t2, a6, validaInsercoesReturn1        # if board_size < row
+      blt t2, a7, validaInsercoesReturn1        # if board_size < col
+      j validaInsercoes2
+    validaInsercoesReturn1:
+      addi a0, zero, 1                          # return 1 -> a0 = 1
+      ret
+
+    validaInsercoes2:
+      beq a4, zero, validaInsercoes2Angulo      # if angle == 0  
+      add t3, a6, a5                            # t3 = row + length
+      blt t2, t3, validaInsercoesReturn2        # board_size < (row + length)
+      j validaInsercoes3
+    validaInsercoes2Angulo:
+      add t3, a7, a5                            # t3 = col + length
+      blt t2, t3, validaInsercoesReturn2        # board_size < (col + length)
+      j validaInsercoes3
+    validaInsercoesReturn2:
+      addi a0, zero, 2                          # return 2 -> a0 = 2
+      ret
+
+    validaInsercoes3:
+      add t3, zero, zero                        # insertions -> t3 = 0
+      blt t3, a5, validaInsercoes3While         # insertions < length
+      j validaInsercoes3WhileFim
+    validaInsercoes3While:
+      addi t4, zero, 4                          # t4 = 4
+      beq a4, zero, validaInsercoes3Angulo      # if angle == 0
+      add t5, a6, t3                            # t5 = boardRow + insertions
+      mul t5, t5, t2                            # t5 = (boardRow + insertions) * BoardSize
+      add t5, t5, a7                            # t5 = ( (boardRow + insertions) * BoardSize) + boardCol
+      mul t5, t5, t4                            # t5 = t5 * 4
+      add t6, zero, a2                          # board[0][0]  
+      add t6, t6, t5                            # board[0][0] + Deslocamento
+      lw s1, (t6)                               # board[row + insertions][col] -> s1 = &t6
+      bne s1, zero, validaInsercoesReturn3      # if board[row + insertions][col] != 0
+      j validaInsercoesReturn3Fim
+    validaInsercoes3Angulo:
+      mul t5, a6, t2                            # t5 = boardRow * BoardSize
+      add t6, a7, t3                            # t6 = boardCol + insertions
+      add t5, t5, a6                            # t5 = ( boardRow * BoardSize) + (boardCol + insertions)
+      mul t5, t5, t4                            # t5 = t5 * 4
+      add t6, zero, a2                          # board[0][0] -> t6
+      add t6, t6, t5                            # board[0][0] + Deslocamento
+      lw s1, (t6)                               # board[row + insertions][col] -> s1 = &t6
+      bne s1, zero, validaInsercoesReturn3      # if board[row + insertions][col] != 0      
+      j validaInsercoesReturn3Fim
+    validaInsercoesReturn3:
+      addi a0, zero, 3                          # return 3 -> a0 = 3
+      ret
+    validaInsercoesReturn3Fim:
+      addi t3, t3, 1                            # insertions++
+
+    validaInsercoes3WhileFim:
+      addi a0, zero, zero                       # return 0 -> a0 = 0
+      ret
+
+  ########## validaInsercoes ##########
   
   end:
     nop
