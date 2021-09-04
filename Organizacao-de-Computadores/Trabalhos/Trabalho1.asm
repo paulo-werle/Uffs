@@ -2,8 +2,10 @@
   # Inicia dados
   board: .space  400
   board_size: .word 10
-  quantity: .asciz "Informe a quantidade de embarações: "
-  data: .asciz "Informe os dados do barco: "
+
+  # Impressões
+  espaco: .asciz " "
+  barra_n: .asciz "\n"
 
   # Anotações
   # lw s1, board_size                     # BoardSize -> s1 = board_size
@@ -49,12 +51,12 @@
       add t5, t5, t2                            # t5 = t5 + boardCol
       mul t5, t5, t4                            # t5 = t5 * 4
       add t3, t3, t5                            # Origem + Deslocamento
-      sw zero, (t3)
+      sw zero, (t3)                             # &t3 = 0
       addi t2, t2, 1                            # boardCol++
-      j novoTabuleiroWhile2
+      j novoTabuleiroWhile2                     # Volta para laço interno
     novoTabuleiroFimWhile2:
       addi t1, t1, 1                            # boardRow++
-      j novoTabuleiroWhile1                     # Volta para laço interno
+      j novoTabuleiroWhile1                     # Volta para laço externo
     novoTabuleiroFimWhile1:
       ret
   ########## novoTabuleiro ##########
@@ -68,9 +70,9 @@
       j insereEmbarcacoesFimWhile
     insereEmbarcacoesCorpoWhile:
       addi a4, zero, 0                          # angle -> a4 = 1
-      addi a5, zero, 5                          # length -> a5 = 5
-      addi a6, zero, 2                          # row -> a6 = 5
-      addi a7, zero, 2                          # col -> a7 = 5
+      addi a5, zero, 1                          # length -> a5 = 5
+      addi a6, zero, 6                          # row -> a6 = 5
+      addi a7, zero, 4                          # col -> a7 = 5
 
       add t6, zero, ra                          # Salva endereço de retorno atual
       jal validaInsercoes                       # Faz validações
@@ -81,6 +83,10 @@
       add a3, zero, t0                          # Monta parametro current
       add t6, zero, ra                          # Salva endereço de retorno atual
       jal inserirTabuleiro                      # Faz validações
+      add ra, zero, t6                          # Ajusta retorno
+
+      add t6, zero, ra                          # Salva endereço de retorno atual
+      jal imprimeBarcos                         # Imprime tabuleiro
       add ra, zero, t6                          # Ajusta retorno
 
       j insereEmbarcacoesErrorFim
@@ -189,5 +195,45 @@
       ret
   ########## inserirTabuleiro ##########
 
+  ########## imprimeBarcos ##########
+    imprimeBarcos:
+      lw t2, board_size                         # BoardSize -> t2 = board_size
+      add t3, zero, zero                        # boardRow -> t3 = 0
+    imprimeBarcosWhile1:
+      blt t3, t2, imprimeBarcosCorpoWhile1      # boardRow < BoardSize
+      j imprimeBarcosFimWhile1
+    imprimeBarcosCorpoWhile1:
+      add t4, zero, zero                        # boardCol -> t4 = 0
+    imprimeBarcosWhile2:
+      blt t4, t2, imprimeBarcosCorpoWhile2      # boardCol < BoardSize
+      j imprimeBarcosFimWhile2
+    imprimeBarcosCorpoWhile2:
+      la a0, espaco                             # Define mensagem
+      li a7, 4                                  # Define paramentro do ecall
+      ecall                                     # Chama SO
+      add s0, zero, a2                          # board[0][0]
+      addi t5, zero, 4                          # t5 = 4
+      mul a1, t3, t2                            # a1 = boardRow * BoardSize
+      add a1, a1, t4                            # a1 = a1 + boardCol
+      mul a1, a1, t5                            # a1 = a1 * 4
+      add s0, s0, a1                            # Origem + Deslocamento
+      lw a0, (s0)                               # &a0 = &(Origem + Deslocamento)
+      li a7, 1                                  # Define paramentro do ecall
+      ecall                                     # Chama SO
+      la a0, espaco                             # Define mensagem
+      li a7, 4                                  # Define paramentro do ecall
+      ecall                                     # Chama SO
+      addi t4, t4, 1                            # boardCol++
+      j imprimeBarcosWhile2                     # Volta para laço interno
+    imprimeBarcosFimWhile2:
+      la a0, barra_n                            # Define mensagem
+      li a7, 4                                  # Define paramentro do ecall
+      ecall                                     # Chama SO
+      addi t3, t3, 1                            # boardRow++
+      j imprimeBarcosWhile1                     # Volta para laço externo
+    imprimeBarcosFimWhile1:
+      ret
+  ########## imprimeBarcos ##########
+  
   end:
     nop
