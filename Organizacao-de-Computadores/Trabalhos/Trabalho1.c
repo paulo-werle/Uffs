@@ -91,7 +91,7 @@ void boatInsertion( int board[BOARD_SIZE][BOARD_SIZE] ) {
     // Faz validação dos dados
     error = validateInserts( board, angle, length, row, col );
 
-    if ( error == 0)
+    if ( !error)
     { // Não possui erros
 
       insertBoard(board, angle, length, row, col, current );
