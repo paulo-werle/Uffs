@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define BOARD_SIZE 10
+#define NAVIOS "31\n11 5 1 1\n0 5 2 2\n0 1 6 4\n"
 
 // novoTabuleiro( int board[BOARD_SIZE][BOARD_SIZE])
 void newBoard( int board[BOARD_SIZE][BOARD_SIZE] ) {
@@ -37,6 +39,7 @@ void printBoard( int board[BOARD_SIZE][BOARD_SIZE]) {
     }
     printf("\n");
   }
+  printf("\n");
 }
 
 
@@ -72,26 +75,63 @@ int validateInserts( int board[BOARD_SIZE][BOARD_SIZE], int angle, int length, i
   return 0; // Não possui erros
 }
 
+int parseInt(int *error, char current, char next) {
+  if ( !*error )
+  { // Caso não tenha erro valida dado
+    
+    if (next == ' ' || next == '\n')
+      return current - '0';
+
+    // Atualiza erro
+      *error = 4;
+  }
+
+  // Retorna 0 pois houve um erro
+  return 0;
+}
+
 // insereEmbarcacoes( int board[BOARD_SIZE][BOARD_SIZE] )
 void boatInsertion( int board[BOARD_SIZE][BOARD_SIZE] ) {
   // Variaveis auxiliares
-  int current, quantity, error, insertions;
+  int current, quantity, insertions, count, error = 0;
 
   // Parametros a ser utilizados
   int angle, length, row, col;
-  
-  printf("Informe a quantidade de embarações: ");
-  scanf("%d", &quantity);
+
+  // Define string de navios
+  char navios[] = NAVIOS;
+
+  // Define quantity
+  quantity = parseInt(&error, navios[0], navios[1]);
 
   for ( current = 1; current <= quantity; current++ )
   {
-    printf("Informe os dados do %d° barco: ", current);
-    scanf("%d %d %d %d", &angle, &length, &row, &col);
 
-    // Faz validação dos dados
-    error = validateInserts( board, angle, length, row, col );
+    if ( !error )
+    { // Caso não tiver erros
 
-    if ( !error)
+      count = ( (current - 1) * 8) + 2;
+      angle = parseInt(&error, navios[ count ], navios[count + 1]);
+      printf("angle: %d, ", angle);
+
+      count = count + 2;
+      length = parseInt(&error, navios[ count ], navios[count + 1]);
+      printf("length: %d, ", length);
+
+      count = count + 2;
+      row = parseInt(&error, navios[ count ], navios[count + 1]);
+      printf("row: %d, ", row);
+
+      count = count + 2;
+      col = parseInt(&error, navios[ count ], navios[count + 1]);
+      printf("col: %d \n", col);
+    
+      // Faz validação dos dados
+      error = validateInserts( board, angle, length, row, col );
+    }
+
+
+    if ( !error )
     { // Não possui erros
 
       insertBoard(board, angle, length, row, col, current );
