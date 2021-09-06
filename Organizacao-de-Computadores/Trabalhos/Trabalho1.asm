@@ -2,11 +2,12 @@
   # Inicia dados
   board: .space  400
   board_size: .word 10
-  navios: .asciz "4\n1 5 1 1\n0 5 2 2\n0 4 2 2\n1 3 0 3"
+  navios: .asciz "3\n1 5 1 1\n0 5 2 2\n0 1 6 4"
 
   # Impressões
   espaco: .asciz " "
   barra_n: .asciz "\n"
+  barra_0: .asciz "\0"
 
   # Anotações
   # lw s1, board_size                     # BoardSize -> s1 = board_size
@@ -73,11 +74,11 @@
       jal converterInteiro                        # Converte para inteiro
       add t1, zero, a0                            # quantity -> t1 = a0
 
+      bne s11, zero, insereEmbarcacoesError       # if (error != 0)
     insereEmbarcacoesWhile:
       bge t1, t0, insereEmbarcacoesCorpoWhile     # quantity >= current
       j insereEmbarcacoesFimWhile
     insereEmbarcacoesCorpoWhile:
-      bne s11, zero, insereEmbarcacoesError       # if (error != 0)
 
       la s2, navios                               # navios -> s2  = navios[0]
       addi t2, zero, 1                            # t2 = 1
@@ -88,31 +89,27 @@
       add s10, s10, t2                            # s10 = ( (current - 1) * 8 ) + 2
       add s2, s2, s10                             # Origem + deslocamento -> navios[s2]
       addi s3, s2, 1                              # s3  = navios[s2 + 1]
-
       jal converterInteiro                        # Converte para inteiro
       add a4, zero, a0                            # angle = a4
-
       addi s2, s2, 2                              # s2  = navios[s2 + 2]
       addi s3, s2, 1                              # s3  = navios[s2 + 1]
       jal converterInteiro                        # Converte para inteiro
       add a5, zero, a0                            # length = a5
-
       addi s2, s2, 2                              # s2  = navios[s2 + 2]
       addi s3, s2, 1                              # s3  = navios[s2 + 1]
       jal converterInteiro                        # Converte para inteiro
       add a6, zero, a0                            # row = a6
-
       addi s2, s2, 2                              # s2  = navios[s2 + 2]
       addi s3, s2, 1                              # s3  = navios[s2 + 1]
       jal converterInteiro                        # Converte para inteiro
       add a7, zero, a0                            # col = a7
-
+      
+      bne s11, zero, insereEmbarcacoesError       # if (error != 0)
       jal validaInsercoes                         # Faz validações
 
       bne s11, zero, insereEmbarcacoesError       # if (error != 0)
       add a3, zero, t0                            # Monta parametro current
-      jal inserirTabuleiro                        # Faz validações
-
+      jal inserirTabuleiro                        # Insere no tabuleiro
       jal imprimeBarcos                           # Imprime tabuleiro
 
       j insereEmbarcacoesErrorFim
@@ -273,10 +270,12 @@
       lb, s5, (s3)                                # s4 = &next
       lb, t2, espaco                              # t2 = ' '
       lb, t3, barra_n                             # t3 = '\n'
+      lb, t4, barra_0                             # t4 = '\0'
 
       bne s11, zero, converterInteiroFim          # if (error != 0)
       beq s5, t2, converterInteiroIf              # if (next == ' ')
       beq s5, t3, converterInteiroIf              # if (next == '\n')
+      beq s5, t4, converterInteiroIf              # if (next == '\0')
       j converterInteiroIfFim
     converterInteiroIf:
       addi t5, zero, 48                           # t5 = 48
