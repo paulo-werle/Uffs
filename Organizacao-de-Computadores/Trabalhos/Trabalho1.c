@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #define BOARD_SIZE 10
-#define NAVIOS "3\n1 5 1 1\n0 5 2 2\n0 1 6 4\n"
+#define NAVIOS "3\n1 1 1 1\n0 1 2 2\n0 1 6 4\n"
 
 // novoTabuleiro( int board[BOARD_SIZE][BOARD_SIZE])
 void newBoard( int board[BOARD_SIZE][BOARD_SIZE] ) {
@@ -71,8 +71,23 @@ void printShots( int board[BOARD_SIZE][BOARD_SIZE]) {
   printf("\n\n");
 }
 
+// imprimeDados( int shots_record, int hits_record, int sunk_record, int shots, int hits, int sunk )
+void printData( int shots_record, int hits_record, int sunk_record, int shots, int hits, int sunk ){
+  printf("Record: --------\n");
+  printf("- Tiros: %d \n", shots_record);
+  printf("- Acertos: %d \n", hits_record);
+  printf("- Afundados: %d \n", sunk_record);
+  printf("----------------\n");
+
+  printf("Voce: ----------\n");
+  printf("- Tiros: %d \n", shots);
+  printf("- Acertos: %d \n", hits);
+  printf("- Afundados: %d \n", sunk);
+  printf("----------------\n");
+}
+
 // confereBarcos( int board[BOARD_SIZE][BOARD_SIZE], int ships )
-int checkShips( int board[BOARD_SIZE][BOARD_SIZE], int ships ) {
+int checkShips( int board[BOARD_SIZE][BOARD_SIZE], int ships, int *sunk ) {
   
   // Inica variaveis
   int boardRow, boardCol, quantity = 0;
@@ -100,8 +115,11 @@ int checkShips( int board[BOARD_SIZE][BOARD_SIZE], int ships ) {
     }
   }
 
-  if ( !quantity ) // Caso não tenha mais navios no tabuleiro
+  if ( !quantity )
+  { // Caso não tenha mais navios no tabuleiro
     printf("O navio %d foi totalmente destruido\n", ships);
+    *sunk += 1;
+  }
 
   // Retorna quantidade
   return quantity;
@@ -216,10 +234,10 @@ void boatInsertion( int board[BOARD_SIZE][BOARD_SIZE], int *error, int *quantity
 }
 
 // novaJogada( int board[BOARD_SIZE][BOARD_SIZE] )
-void newMove( int board[BOARD_SIZE][BOARD_SIZE] ){
+void newMove( int board[BOARD_SIZE][BOARD_SIZE], int *shots, int *hits, int *sunk ){
 
   // Inicia variaveis
-  int ship, row, col;
+  int ship = 0, row, col;
 
   // Coleta dados
   printf("Informe: Linha,Coluna:\n");
@@ -234,6 +252,7 @@ void newMove( int board[BOARD_SIZE][BOARD_SIZE] ){
       // Aguarda numero do navio e atualiza dado
       ship = board[row][col];
       board[row][col] += 10;
+      *hits += 1;
       
     } else
     { // Indica que o tiro foi na agua
@@ -246,8 +265,12 @@ void newMove( int board[BOARD_SIZE][BOARD_SIZE] ){
     printf("Esta jogada já foi feita anteriormente \n");
   }
 
+  // Imprime dados de tiros
   printShots(board);
-  checkShips(board, ship);
+  
+  // Verefica se um navio foi destruido
+  *shots += 1;
+  checkShips(board, ship, sunk);
 }
 
 // menu()
@@ -271,6 +294,8 @@ int menu() {
 
 int main() {
   int error, quantity_ships, operation = 3;
+  int shots_record = 100, hits_record = 0, sunk_record = 0, shots = 0, hits = 0, sunk = 0;
+  int aux = 0;
 
   // Inicializa variavel para Tabuleiro
   int board[BOARD_SIZE][BOARD_SIZE];
@@ -287,7 +312,8 @@ int main() {
     switch ( operation )
     {
       case 1: //  Fazer nova jogada
-        newMove(board);
+        newMove(board, &shots, &hits, &sunk );
+        printData(shots_record, hits_record, sunk_record, shots, hits, sunk);
         break;
 
       case 2: //  Mostrar navios
@@ -297,13 +323,34 @@ int main() {
       case 3: // Reiniciar jogo
         newBoard(board);
         boatInsertion(board, &error, &quantity_ships);
+        shots = 0;
+        hits = 0;
+        sunk = 0;
         break;
     }
 
     // Verefica quantidade de peças para saber se é vencedor
-    quantity_ships = checkShips(board, 0);
-    if ( !quantity_ships )
-      printf("Temos um VENCEDOR");
+    quantity_ships = checkShips(board, 0, &aux);
+    if ( !quantity_ships ){
+      
+      // Imprime mensagem do vencedor
+      printf("Temos um VENCEDOR\n");
+
+      // Caso ser um novo record
+      if ( shots < shots_record)
+      {
+        shots_record = shots;
+        hits_record = hits;
+        sunk_record = sunk;
+      }
+
+      // Redefine parametros para iniciar um novo jogo
+      newBoard(board);
+      boatInsertion(board, &error, &quantity_ships);
+      shots = 0;
+      hits = 0;
+      sunk = 0;
+    }
   }
 
   return 0;
