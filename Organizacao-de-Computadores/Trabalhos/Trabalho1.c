@@ -115,7 +115,7 @@ int checkShips( int board[BOARD_SIZE][BOARD_SIZE], int ships, int *sunk ) {
     }
   }
 
-  if ( !quantity )
+  if ( !quantity && ships )
   { // Caso não tenha mais navios no tabuleiro
     printf("O navio %d foi totalmente destruido\n", ships);
     *sunk += 1;
