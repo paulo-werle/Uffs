@@ -12,10 +12,13 @@
   board: .space  400
   board_size: .word 10
 
-  navios: .asciz "3\n1 1 1 1\n0 1 2 2\n0 1 6 4"
+  navios: .asciz "3\n1 5 1 1\n0 5 2 2\n0 1 6 4"
 
   # Impressões
   vencedor: .asciz "Temos um VENCEDOR\n"
+  erro_1: .asciz "A posição do navio é invalida\n"
+  erro_2: .asciz "O navio extrapola as dimenções da matriz\n"
+  erro_3: .asciz "Ocorre sobreposição dos navios\n"
   menu_info: .asciz "Informe qual ação deseja fazer: \n"
   menu_0: .asciz "0: Sair do jogo \n"
   menu_1: .asciz "1: Fazer uma nova jogada \n"
@@ -32,10 +35,12 @@
   placar_tiros: .asciz "- Tiros: "
   placar_acertos: .asciz "- Acertos: "
   placar_afundados: .asciz "- Afundados: "
+  placar_ultimo_tiro: .asciz "- Ultimo Tiro: "
   tiro_errado:  .asciz " ø "
   tiro_agua:  .asciz " o "
   tiro_navio:  .asciz " x "
   espaco: .asciz " "
+  virgula: .asciz ","
   barra_n: .asciz "\n"
   barra_t: .asciz "\t"
   barra_0: .asciz "\0"
@@ -214,6 +219,7 @@
       # -
     inserirTabuleiro:
       add t3, zero, zero                      # insercoes = 0
+      lw t2, board_size                       # t2 = board_size
     inserirTabuleiroTesteWhile:
       blt t3, a5, inserirTabuleiroWhile       # insercoes < length
       j inserirTabuleiroWhileFim
@@ -358,6 +364,8 @@
       # a4 - int shots_record
       # a5 - int hits_record
       # a6 - int sunk_record
+      # s1 - int row
+      # s2 - int col
     # Retorno
       # -
     imprimeDados:
@@ -413,6 +421,20 @@
       ecall                                   # Imprime string
       li a7, 1
       add a0, zero, a3
+      ecall                                   # Imprime inteiro
+      li a7, 4
+      la a0, barra_n
+      ecall                                   # Imprime string
+      la a0, placar_ultimo_tiro
+      ecall                                   # Imprime string
+      li a7, 1
+      add a0, zero, s1
+      ecall                                   # Imprime inteiro
+      li a7, 4
+      la a0, virgula
+      ecall                                   # Imprime string
+      li a7, 1
+      add a0, zero, s2
       ecall                                   # Imprime inteiro
       li a7, 4
       la a0, barra_n
@@ -500,6 +522,7 @@
       # a5 - int length
       # a6 - int row
       # a7 - int col
+      # s11 - int *error
     # Retorno
       # s11 - int
     validaInsercoes:
@@ -508,7 +531,8 @@
       blt t2, a7, validaInsercoesReturn1      # if ( board_size < col )
       j validaInsercoes2
     validaInsercoesReturn1:
-      addi s11, zero, 1                       # s11 = 1
+      addi t4, zero, 1
+      sw t4, (s11)                            # *error = 1
       ret
 
     validaInsercoes2:
@@ -521,7 +545,8 @@
       blt t2, t3, validaInsercoesReturn2      # if ( board_size < (col + length) )
       j validaInsercoes3
     validaInsercoesReturn2:
-      addi s11, zero, 2                       # s11 = 2
+      addi t4, zero, 2
+      sw t4, (s11)                            # *error = 2
       ret
 
     validaInsercoes3:
@@ -554,14 +579,16 @@
       bne s1, zero, validaInsercoesReturn3    # if ( board[row][col + insertions] != 0 )     
       j validaInsercoesReturn3Fim
     validaInsercoesReturn3:
-      addi s11, zero, 3                       # s11 = 3
+      addi t4, zero, 3
+      sw t4, (s11)                            # *error = 3
       ret
     validaInsercoesReturn3Fim:
       addi t3, t3, 1                          # insertions++
       j validaInsercoes3TesteWhile
 
     validaInsercoes3WhileFim:
-      add s11, zero, zero                     # s11 = 0
+      add t4, zero, zero
+      sw t4, (s11)                            # *error = 0
       ret
   ########## validaInsercoes ##########
 
@@ -575,13 +602,14 @@
     converterInteiro:
       lb, s4, (s2)                            # s4 = &current
       lb, s5, (s3)                            # s4 = &next
-      lb, t2, espaco                          # t2 = ' '
-      lb, t3, barra_n                         # t3 = '\n'
-      lb, t4, barra_0                         # t4 = '\0'
 
-      bne s11, zero, converterInteiroFim      # if ( error != 0 )
+      lw t4, (s11)
+      bne t4, zero, converterInteiroFim       # if ( error != 0 )
+      lb, t2, espaco
       beq s5, t2, converterInteiroIf          # if ( next == ' ' )
+      lb, t3, barra_n
       beq s5, t3, converterInteiroIf          # if ( next == '\n' )
+      lb, t4, barra_0
       beq s5, t4, converterInteiroIf          # if ( next == '\0' )
       j converterInteiroIfFim
     converterInteiroIf:
@@ -590,7 +618,8 @@
       add a0, zero, t4                        # a0 = current - 48
       ret
     converterInteiroIfFim:
-      addi s11, zero, 4                       # *error = 4
+      addi t4, zero, 4
+      sw t4, (s11)                            # *error = 4
     converterInteiroFim:
       add a0, zero, zero                      # a0 = 0
       ret
@@ -606,17 +635,16 @@
     insereEmbarcacoes:
       add t6, zero, ra                        # Salva endereço de retorno atual
       addi t0, zero, 1                        # current = 1
-
       sw zero, (s11)                          # *error = 0
       sw zero, (s9)                           # *quantity_ships = 0
-      lw s11, (s11)
 
       la s2, navios
       addi s3, s2, 1
       jal converterInteiro                    # converterInteiro(s11, s2, s3)
       add t1, zero, a0                        # quantity -> t1 = a0
 
-      bne s11, zero, insereEmbarcacoesError   # if (error != 0)
+      lw t2, (s11)
+      bne t2, zero, insereEmbarcacoesError    # if (error != 0)
     insereEmbarcacoesWhile:
       bge t1, t0, insereEmbarcacoesCorpoWhile # if ( quantity >= current )
       j insereEmbarcacoesFimWhile
@@ -649,10 +677,12 @@
       jal converterInteiro                    # converterInteiro(s11, s2, s3)
       add a7, zero, a0                        # col = a7
       
-      bne s11, zero, insereEmbarcacoesError   # if (error != 0)
+      lw t2, (s11)
+      bne t2, zero, insereEmbarcacoesError    # if (error != 0)
       jal validaInsercoes                     # validaInsercoes(a2, a4, a5, a6, a7)
 
-      bne s11, zero, insereEmbarcacoesError   # if (error != 0)
+      lw t2, (s11)
+      bne t2, zero, insereEmbarcacoesError    # if (error != 0)
       add a3, zero, t0
       jal inserirTabuleiro                    # inserirTabuleiro(a2, a4, a5, a6, a7, a3)
       lw t2, (s9)
@@ -661,9 +691,30 @@
 
       j insereEmbarcacoesErrorFim
     insereEmbarcacoesError:
-      add a0, zero, s11
-      li a7, 1
-      ecall
+      lw t2, (s11)
+      li a7, 4                                
+      addi t3, zero, 1
+      beq t2, t3, insereEmbarcacoesError1     # if ( *erro == 1 )
+      addi t3, zero, 4
+      beq t2, t3, insereEmbarcacoesError1     # if ( *erro == 4 )
+      addi t3, zero, 2
+      beq t2, t3, insereEmbarcacoesError2     # if ( *erro == 2 )
+      addi t3, zero, 3
+      beq t2, t3, insereEmbarcacoesError3     # if ( *erro == 3 )
+      j insereEmbarcacoesFimError
+    insereEmbarcacoesError1:
+      la a0, erro_1
+      ecall                                   # Imprime string - Erro 1
+      j insereEmbarcacoesFimError
+    insereEmbarcacoesError2:
+      la a0, erro_2
+      ecall                                   # Imprime string - Erro 2
+      j insereEmbarcacoesFimError
+    insereEmbarcacoesError3:
+      la a0, erro_3
+      ecall                                   # Imprime string - Erro 3
+      j insereEmbarcacoesFimError
+    insereEmbarcacoesFimError:
       j insereEmbarcacoesFimWhile
     insereEmbarcacoesErrorFim:
       addi t0, t0, 1                          # current++
@@ -680,7 +731,8 @@
       # a4 - int *hits
       # a5 - int *sunk
     # Retorno
-      # -
+      # s1 - row
+      # s2 - col
     novaJogada:
       add t6, zero, ra                        # Salva endereço de retorno atual
       li a7, 4
@@ -688,20 +740,20 @@
       ecall                                   # Imprime string
       li a7, 5
       ecall                                   # Lê inteiro
-      add t0, zero, a0                        # t0 = a0
+      add s1, zero, a0                        # s1 = a0
       li a7, 4
       la a0, jogada_coluna
       ecall                                   # Imprime string
       li a7, 5
       ecall                                   # Lê inteiro
-      add t1, zero, a0                        # t1 = a0
+      add s2, zero, a0                        # s2 = a0
       lw t2, board_size
       add a6, zero, zero
 
       add t3, zero, a2
       addi t4, zero, 4
-      mul t5, t0, t2
-      add t5, t5, t1
+      mul t5, s1, t2
+      add t5, t5, s2
       mul t5, t5, t4
       add t3, t3, t5                          # board[][] + (( row * board_size ) + col) * 4
       lw t4, (t3)                             # origem + deslocamento
