@@ -4,6 +4,7 @@
 #include <string.h>
 #include <time.h>
 
+
 // Número de células na MP: 128;
 //  Tamanho do bloco: 4 células;
 //  Número de linhas na cache: 8;
@@ -57,15 +58,6 @@ struct cache
 };
 typedef struct cache Cache;
 
-struct estatistica
-{ // Estatisticas
-  int leitura_acertos;
-  int leitura_falta; 
-  int escrita_acertos;
-  int escrita_falta;
-};
-typedef struct estatistica Estatistica;
-
 // ---------- Funções auxiliares ----------
 int menu() {
   // Inicia variavel
@@ -82,16 +74,6 @@ int menu() {
   printf("\n");
 
   return op;
-}
-
-float calculaPorcentagem(int valor1, int valor2){
-  if (valor1 == 0 && valor2 == 0){
-    return 0.0;
-  }
-
-  float valor = valor1;
-  valor = (valor / (valor1 + valor2) ) * 100;
-  return valor;
 }
 
 int binarioParaDecimal( int binario ){
@@ -137,6 +119,34 @@ void extrairDado( char dado_origem[], char dado_destino[], int origem, int desti
   }
 }
 
+// void decimaInteiroParaBinarioString(int numero, char destino[], int tamanho){
+//   // Inicia variaveis
+//   int contador_deslocamento, contador_string = 0;
+//   char string_auxiliar[tamanho];
+// 
+//   // Calcula tamanho da string e /0
+//   contador_deslocamento = tamanho;
+// 
+//   // Percorre string
+//   while( contador_deslocamento >= 0){
+//     
+//     // Verefica deslocamento
+//     if ( (numero >> contador_deslocamento) & 1) {
+//       string_auxiliar[contador_string] = '1';
+//     } else {
+//       string_auxiliar[contador_string] = '0';
+//     }
+// 
+//     // Atualiza contador
+//     contador_deslocamento--;
+//     contador_string++;
+//   }
+// 
+//   extrairDado(string_auxiliar, destino, 2, 6);
+// }
+
+
+
 int stringParaInteiro(char origem[]) {
   // Inicia variaveis
   int contador, inteiro = 0;
@@ -171,17 +181,31 @@ MemoriaPrincipal *iniciarMemoriaPrincipal(){
 
       int result;
       char celula[8];
+      // printf("%d\n", aleatorio);
       result = decimalParaBinario(aleatorio);  //numero em binario e inteiro
-
+      // printf("%d\n", result);
       inteiroParaString(result, celula); //string do binario em 8 bits
+      // printf("%s\n", celula);
       //memoria_principal->bloco[contador1].celula[contador2] = teste;
 
       strcpy(memoria_principal->bloco[contador1].celula[contador2], celula);
 
-      
+      //decimaInteiroParaBinarioString(aleatorio, memoria_principal->bloco////[contador1].celula[contador2], 8);
+      //printf("%s\n", memoria_principal->bloco[contador1].celula[contador2]);
+      // rand() % 256
+      // inteiroParaString(decimalParaBinario(aleatorio), teste);
+      // printf("%s\n", teste );
+      // inteiroParaString(decimalParaBinario(aleatorio), celula);
+      // printf("%s\n", celula);
+
+      //strcpy(memoria_principal->bloco[contador1].celula[contador2], celula);
+      // printf("%s\n\n", memoria_principal->bloco[contador1].celula[contador2]);
+      // memoria_principal->bloco[contador1].celula[contador2];
     }
   }
 
+  // printf("%s\n", memoria_principal->bloco[0].celula[0]);
+  
   return memoria_principal;
 }
 
@@ -201,17 +225,6 @@ Cache *iniciarCache(){
   return cache;
 }
 
-Estatistica *iniciarEstatistica(){
-
-  Estatistica *estatistica = malloc (sizeof(Estatistica));
-  estatistica->leitura_acertos = 0;
-  estatistica->leitura_falta = 0;
-  estatistica->escrita_acertos = 0;
-  estatistica->escrita_falta = 0;
-
-  return estatistica;
-}
-
 int vereficaDadoNaCache(Cache *cache, char rotulo[]){
   // Inicia variaveis
   int contador, hit = 0;
@@ -220,7 +233,7 @@ int vereficaDadoNaCache(Cache *cache, char rotulo[]){
   for ( contador = 0; contador < LINHAS_NA_CHACHE; contador++){
     if ( cache->linhas[contador].validade == 1 && !strcmp(cache->linhas[contador].rotulo, rotulo) ){
       hit = 1;
-      
+      printf("Dado encontrado na cache\n");
     }
   }
 
@@ -296,7 +309,7 @@ void imprimeMemoriaPrincipal(MemoriaPrincipal *memoria_principal){
 
   // Imprime cabecalho
   printf("-----   MEMORIA PRINCIPAL   ------------------------------\n");
-  printf("| Bloco \t| C0 \t\t| C1 \t\t| C2 \t\t| C3 \t\t|\n");
+  printf("| Bloco \t| C0 \t| C1 \t| C2 \t| C3 \t|\n");
 
   // Percorre linhas na memoria principal
   for ( contador1 = 0; contador1 < 32; contador1++){
@@ -321,13 +334,13 @@ void imprimeCache(Cache *cache){
 
   // Imprime cabecalho
   printf("-----   MEMORIA CACHE   ------------------------------\n");
-  printf("|LRU \t| Val. \t| Rot. \t| C0 \t\t| C1 \t\t| C2 \t\t| C3 \t\t|\n");
+  printf("|LRU \t| Val. \t| Rot. \t| C0 \t| C1 \t| C2 \t| C3 \t|\n");
 
   // Percorre linhas na cache
   for ( contador1 = 0; contador1 < LINHAS_NA_CHACHE; contador1++){
     
     // Imprime dados da cache 
-    printf("|%s \t| %d \t| %s ", cache->linhas[contador1].LRU, cache->linhas[contador1].validade, cache->linhas[contador1].rotulo);
+    printf("|%s \t| %d \t| %s \t", cache->linhas[contador1].LRU, cache->linhas[contador1].validade, cache->linhas[contador1].rotulo);
     
     // Percorre bloco
     for ( contador2 = 0; contador2 < TAMANHO_BLOCO; contador2++){
@@ -342,7 +355,7 @@ void imprimeCache(Cache *cache){
 // ---------- Funções de dados ----------
 
 // ---------- Funções de operações ----------
-void lerConteudo(MemoriaPrincipal *memoria_principal, Cache *cache, Estatistica *estatistica){
+void lerConteudo(MemoriaPrincipal *memoria_principal, Cache *cache){
   // Inicia variaveis
   int contador, celula, lru_linha;
   char entrada[8], rotulo[6], deslocamento[3], dado_lru[8];
@@ -360,12 +373,6 @@ void lerConteudo(MemoriaPrincipal *memoria_principal, Cache *cache, Estatistica 
   if( !vereficaDadoNaCache(cache, rotulo) ){
     printf("Não encontrado na Cache, buscando na memória principal..\n");
     colocaDadoNaCache(memoria_principal, cache, rotulo);
-    
-    // Houve uma falta
-    estatistica->leitura_falta++;
-  } else {
-    estatistica->leitura_acertos++;
-    printf("Dado encontrado na cache\n");
   }
 
   // Imprime cabecalho
@@ -399,17 +406,17 @@ void lerConteudo(MemoriaPrincipal *memoria_principal, Cache *cache, Estatistica 
   printf("\n");
 }
 
-void escreverNaMemoria(MemoriaPrincipal *memoria_principal, Cache *cache, Estatistica *estatistica){
+void escreverNaMemoria(MemoriaPrincipal *memoria_principal, Cache *cache){
 
   // Inicia variaveis
   char endereco[8], rotulo[6], deslocamento[3], celula[9];
 
   // Pegar dado de qual memoria vai ser lida
-  printf("Digite qual endereço de memoria deseja escrever; Ex 0000000 (7bits) \n");
+  printf("Digite qual endereço de memoria deseja escrever; Ex 0000000 (7bits)\n");
   scanf("%s", endereco); 
 
   // Le dado que vai ser armazenado
-  printf("Informe o que deseja escrever na memoria; Ex 00000000 (8bits)\n");
+  printf("Informe o que deseja escrever na memoria; Ex 00000000\n");
   scanf("%s", celula);
 
   // Manipula dados
@@ -419,11 +426,6 @@ void escreverNaMemoria(MemoriaPrincipal *memoria_principal, Cache *cache, Estati
   // Caso não tiver na cache coloca
   if( !vereficaDadoNaCache(cache, rotulo) ){
     colocaDadoNaCache(memoria_principal, cache, rotulo);
-
-    estatistica-> escrita_falta++;
-  }else {
-    estatistica->escrita_acertos++;
-    printf("Dado encontrado na cache\n");
   }
 
   // Altera dados na cache
@@ -432,34 +434,13 @@ void escreverNaMemoria(MemoriaPrincipal *memoria_principal, Cache *cache, Estati
   // Escreve dado na memoria principal
   strcpy(memoria_principal->bloco[ binarioParaDecimal(stringParaInteiro(rotulo)) ].celula[ binarioParaDecimal(stringParaInteiro(deslocamento)) ], celula);
 }
-
-void mostraEstatisticas(Estatistica *estatistica){
-
-  printf("-----   ESTATISTICAS   ------------------------------\n");
-  printf("Leituras: %d \n", estatistica->leitura_acertos + estatistica->leitura_falta);
-  
-  printf("\t hit: %d, %.2f%% \n", estatistica->leitura_acertos, calculaPorcentagem(estatistica->leitura_acertos, estatistica->leitura_falta));
-  printf("\t miss: %d, %.2f%% \n\n", estatistica->leitura_falta, calculaPorcentagem(estatistica->leitura_falta, estatistica->leitura_acertos));
-  
-  printf("Escritas: %d \n", estatistica->escrita_acertos + estatistica->escrita_falta);
-  printf("\t hit: %d, %.2f%% \n", estatistica->escrita_acertos, calculaPorcentagem(estatistica->escrita_acertos, estatistica->escrita_falta));
-  printf("\t miss: %d, %.2f%% \n\n", estatistica->escrita_falta, calculaPorcentagem(estatistica->escrita_falta, estatistica->escrita_acertos));
-
-  printf("Total de acessos: %d\n\n", (estatistica->leitura_acertos + estatistica->leitura_falta) + (estatistica->escrita_acertos + estatistica->escrita_falta));
-
-}
 // ---------- Funções de operações ----------
 
 int main(){
   // Inicia variaveis
   int operation = 1;
-  //apresentar as estatísticas de acertos e faltas (absolutos e percentuais)
-  //para as três situações: leitura, escrita e geral;
   
   srand(time(0));
-
-  // Inicia estatisticas
-  Estatistica *estatistica = iniciarEstatistica();
 
   // Inicia memoria principal
   MemoriaPrincipal *memoria_principal = iniciarMemoriaPrincipal();
@@ -475,17 +456,16 @@ int main(){
     {
       case 1:
         // Ler o conteúdo de um endereço da memória
-        lerConteudo(memoria_principal, cache, estatistica);
+        lerConteudo(memoria_principal, cache);
         break;
  
       case 2:
         // Escrever endereço da memória
-        escreverNaMemoria(memoria_principal, cache, estatistica);
+        escreverNaMemoria(memoria_principal, cache);
         break;
  
       case 3:
         //Apresentar as estatísticas
-        mostraEstatisticas(estatistica);
         break;
 
       case 4:
@@ -495,6 +475,12 @@ int main(){
       case 5:
         // Imprimir memoria principal
         imprimeMemoriaPrincipal(memoria_principal);
+
+        //inteiroParaString(teste_origem, str_destino);
+        //decimaInteiroParaBinarioString(1, str_destino, sizeof(str_destino) );
+       // printf("%s\n", str_destino);
+        // extrairDado(str_destino, str_destino2, 4, 7);
+        // printf("%s\n", str_destino2);
         break;
     }
   }
