@@ -8,6 +8,9 @@
 // Paulo Eduardo Rodrigues Werle
 // André Lucas Machado Giachini
 
+// Repositorio
+// https://github.com/paulo-werle/Uffs/blob/master/Organizacao-de-Computadores/Trabalhos/Trabalho2.c
+
 // Como rodar o projeto
 // gcc Trabalho2.c -lm -o nome_do_arquivo
 // ./nome_do_arquivo
