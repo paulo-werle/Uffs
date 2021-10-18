@@ -4,6 +4,15 @@
 #include <string.h>
 #include <time.h>
 
+// Alunos:
+// Paulo Eduardo Rodrigues Werle
+// André Lucas Machado Giachini
+
+// Como rodar o projeto
+// gcc Trabalho2.c -lm -o nome_do_arquivo
+// ./nome_do_arquivo
+
+// Descrição
 // Número de células na MP: 128;
 //  Tamanho do bloco: 4 células;
 //  Número de linhas na cache: 8;
@@ -16,7 +25,6 @@
 // OBS4: Os contadores da política de substituição possuem 3 bits.
 
 // Configurações do programa
-
 // Número de células na MP: 128;
 #define CELULAS_NA_MP 128
 // Tamanho do bloco: 4 células;
@@ -40,7 +48,6 @@ struct memoria_principal
   Bloco bloco[32];
 };
 typedef struct memoria_principal MemoriaPrincipal;
-
 
 struct linhas
 { // Linhas da memoria cache
