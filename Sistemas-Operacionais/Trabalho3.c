@@ -14,7 +14,7 @@ void *threadFunction1(void* arg);
 void *threadFunction2(void* arg);
 
 void main() {
-  // Thread principal 
+  // Thread principal
   pthread_t thread;
   pthread_create( &thread, NULL, &threadFunction, NULL);
   pthread_join( thread, NULL);
@@ -46,7 +46,7 @@ void *threadFunction0(void* arg){
 
   for(;;) {
     if (globalCount >= maxCount) return(NULL);
- 
+
     pthread_mutex_lock( &mutexCount );
     pthread_cond_wait( &mutexCondition0, &mutexCount );
     printf("Thread 0: globalCount: %d \n", ++globalCount );
@@ -60,7 +60,7 @@ void *threadFunction0(void* arg){
 
 void *threadFunction1(void* arg){
   int maxCount = *((int *) arg);
-  
+
   for(;;) {
     if (globalCount >= maxCount) return(NULL);
 
@@ -79,15 +79,18 @@ void *threadFunction2(void* arg){
   int maxCount = *((int *) arg);
 
   for(;;) {
+
+    pthread_mutex_lock( &mutexCount );
     switch (globalCount % 3) {
       case 0:
+        pthread_mutex_unlock( &mutexCount );
         pthread_cond_signal( &mutexCondition0 );
       break;
       case 1:
+        pthread_mutex_unlock( &mutexCount );
         pthread_cond_signal( &mutexCondition1 );
       break;
       case 2:
-        pthread_mutex_lock( &mutexCount );
         printf("Thread 2: globalCount: %d \n", ++globalCount );
         pthread_mutex_unlock( &mutexCount );
       break;
