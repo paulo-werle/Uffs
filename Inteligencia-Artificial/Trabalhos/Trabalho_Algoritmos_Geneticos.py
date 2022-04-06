@@ -1,10 +1,11 @@
-# Importando bibliotecas
+# BIBLIOTECAS
 import math
 import time
 import random
 import numpy as np
 
-# Definindo funções
+# FUNÇÕES
+# - Função para avaliar soluações
 def makespan(instance, solution):
   instanceSize = len(instance)
   time = [0] * instanceSize
@@ -24,6 +25,7 @@ def makespan(instance, solution):
 
   return time[instanceSize - 1]
 
+# - Função para ler arquivos e retornar as instancias
 def readInstances(fileList):
   instanceList = []
 
@@ -52,6 +54,7 @@ def readInstances(fileList):
   # Retorna a lista de instancias
   return instanceList
 
+# - Função para criar a população inicial aleatoriamente
 def createInitialPopulation(instance, size):
   population = [
     np.random.choice(instance['jobsNumber'], instance['jobsNumber'], replace=False)
@@ -60,6 +63,7 @@ def createInitialPopulation(instance, size):
 
   return population
 
+# - Função para avaliar a população
 def evaluatePopulation(instance, population):
   evaluatedPopulation = []
 
@@ -75,6 +79,7 @@ def evaluatePopulation(instance, population):
 
   return sortedPopulation
 
+# - Função para selecionar a população
 def selectPopulation(evaluatedPopulation, populationSize):
   relationship = []
   half = round(populationSize / 2)
@@ -91,14 +96,42 @@ def selectPopulation(evaluatedPopulation, populationSize):
       evaluatedPopulation[random.randint(0, populationSize - 1)]
     ])
 
-  print(len(relationship))
+  return relationship
 
+# - Função para calcula tamanho da população
 def calcPopulationSize(instance):
   number = math.pow(
     instance['jobsNumber'], math.log10( instance['jobsNumber'] )
   )
 
   return math.ceil(number / 2.0) * 2
+
+# - Função para fazer a recombinação e gerar soluções filhas
+def recombination(selectedPopulation, instance):
+  children = []
+  default_list = list(range(20))
+
+  for parents in selectedPopulation:
+    # Gera indice de corte
+    randomHalf = random.randint(0, instance['jobsNumber'])
+
+    # Cria filho apartir do corte dos pais
+    child = np.array([
+      *parents[0]['population'][:randomHalf],
+      *parents[1]['population'][randomHalf:]
+    ])
+
+    # Pega elementos duplicados e os que não tem no filho
+    duplicates = [index for index, val in enumerate(child) if val in child[:index]]
+    missings = list( set(child).symmetric_difference(set(default_list)) )
+
+    # Substitui elementos duplicados pelos que não tem
+    for index, duplicates_index in enumerate(duplicates):
+      child[duplicates_index] = missings[index]
+
+    children.append(child)
+
+  return children
 
 # Iniciando Programa
 
@@ -146,13 +179,13 @@ for instance in instanceList:
   evaluatedPopulation = evaluatePopulation(instance, population)
 
   # Define a melhor solução atual
-  bestCurrentSolution = evaluatedPopulation[0]
+  # bestCurrentSolution = evaluatedPopulation[0]
 
   # Seleciona as populações
   selectedPopulation = selectPopulation(evaluatedPopulation, populationSize)
 
   # Recombinar amostras
-  # recombination(selectedPopulation)
+  newSolution = recombination(selectedPopulation, instance)
 
 
 ########## Anotações ##########
