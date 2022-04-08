@@ -1,10 +1,11 @@
-# BIBLIOTECAS
+# ########## BIBLIOTECAS ##########
 import math
 import time
 import random
+import sys
 import numpy as np
 
-# FUNÇÕES
+# ########## FUNÇÕES ##########
 # - Função para avaliar soluações
 def makespan(instance, solution):
   instanceSize = len(instance)
@@ -71,11 +72,11 @@ def evaluatePopulation(instance, population):
   for solution in population:
     evaluatedPopulation.append({
       'population': solution,
-      'time': makespan(instance['lines'], list(solution) )
+      'aptitude': makespan(instance['lines'], list(solution) )
     })
 
   # Ordena população de acordo com a avaliação
-  sortedPopulation = sorted(evaluatedPopulation, key = lambda obj: obj['time'])
+  sortedPopulation = sorted(evaluatedPopulation, key = lambda obj: obj['aptitude'])
 
   return sortedPopulation
 
@@ -109,7 +110,7 @@ def calcPopulationSize(instance):
 # - Função para fazer a recombinação e gerar soluções filhas
 def recombination(selectedPopulation, instance):
   children = []
-  default_list = list(range(20))
+  defaultList = list(range(20))
 
   for parents in selectedPopulation:
     # Gera indice de corte
@@ -123,17 +124,41 @@ def recombination(selectedPopulation, instance):
 
     # Pega elementos duplicados e os que não tem no filho
     duplicates = [index for index, val in enumerate(child) if val in child[:index]]
-    missings = list( set(child).symmetric_difference(set(default_list)) )
+    missings = list( set(child).symmetric_difference(set(defaultList)) )
 
     # Substitui elementos duplicados pelos que não tem
-    for index, duplicates_index in enumerate(duplicates):
-      child[duplicates_index] = missings[index]
+    for index, duplicatesIndex in enumerate(duplicates):
+      child[duplicatesIndex] = missings[index]
 
     children.append(child)
 
   return children
 
-# Iniciando Programa
+# - Função para realizar uma mutação na solução
+def shift(newSolution, instance):
+
+  for solution in newSolution:
+    swapIndex = [
+      random.randint(0, instance['jobsNumber'] - 1),
+      random.randint(0, instance['jobsNumber'] - 1)
+    ]
+
+    tmp = solution[ swapIndex[0] ]
+    solution[ swapIndex[0] ] = solution[ swapIndex[1] ]
+    solution[ swapIndex[1] ] = tmp
+
+  return newSolution
+
+def updateBestSolution(evaluatedPopulation, bestSolution):
+  # Pega primeira população, pois elas vão estar ordenadas pela aptidão
+  currentBestSolution = evaluatedPopulation[0]
+
+  if bestSolution['aptitude'] > currentBestSolution['aptitude']:
+    bestSolution = currentBestSolution
+
+  return bestSolution
+
+########## PROGRAMA PRINCIPAL ##########
 
 fileList = [
   { 'name': 'tai20_5.txt',   'jobsNumber': 20,  'machinesNumber': 5  },
@@ -150,46 +175,43 @@ fileList = [
 
 # Le instancias
 instanceList = readInstances(fileList)
-
 # Percorre instancias
 for instance in instanceList:
-
-  # Define a propria estancia como a melhor
-  # bestSolutions = instance
-
   # Calcula tamanho da população
   populationSize = calcPopulationSize(instance)
+  # Executa 10 vezes cada instancia
+  for instanceAttempt in range(10):
+    # Monta melhor solução para execução
+    bestSolution = { 'population': [], 'aptitude': sys.maxsize, 'endTime': 0 }
+    # Começa a marcar o tempo
+    startTime = time.time()
+    # Cria população inicial
+    population = createInitialPopulation(instance, populationSize)
+    # Percorre até chegar em uma condição de break
+    while True:
+      if 1 <= time.time() - startTime:
+        break
+      if False:
+        break
+      # Avalia a população
+      evaluatedPopulation = evaluatePopulation(instance, population)
+      # Atualiza a melhor solução
+      bestSolution = updateBestSolution(evaluatedPopulation, bestSolution)
+      # Seleciona as populações
+      selectedPopulation = selectPopulation(evaluatedPopulation, populationSize)
+      # Recombinar amostras
+      newSolution = recombination(selectedPopulation, instance)
+      # Faz uma mutação nas amostras
+      newSolution = shift(newSolution, instance)
+      # Seleciona a nova nova geração para ser a população
+      population = newSolution
+    # Grava tempo final
+    bestSolution['endTime'] = time.time() - startTime
 
-  # for instanceAttempt in range(10):
-    # bestSolution = {'solution': [],'aptitude': sys.maxint,'finalTime': 0}
-
-  # Inicia tempo
-  # startTime = time.time()
-
-  # Cria população inicial
-  population = createInitialPopulation(instance, populationSize)
-
-  # while true:
-  #   if 180 <= time.time() - tempoInicial:
-  #     break
-  #   if criterioParada2 == true:
-  #     break
-
-  # Avalia a população
-  evaluatedPopulation = evaluatePopulation(instance, population)
-
-  # Define a melhor solução atual
-  # bestCurrentSolution = evaluatedPopulation[0]
-
-  # Seleciona as populações
-  selectedPopulation = selectPopulation(evaluatedPopulation, populationSize)
-
-  # Recombinar amostras
-  newSolution = recombination(selectedPopulation, instance)
+    print(bestSolution)
 
 
 ########## Anotações ##########
-
 # Ler arquivos com instancias
 #   - Deve se ler apenas a primeira instancia de cada arquivo
 #   - Ver qual dados vamos usar para poder montar na instancia
