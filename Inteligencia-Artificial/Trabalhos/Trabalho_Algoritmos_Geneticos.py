@@ -3,6 +3,7 @@ import math
 import time
 import random
 import sys
+import csv
 import numpy as np
 
 # ########## FUNÇÕES ##########
@@ -58,8 +59,10 @@ def readInstances(fileList):
 # - Função para criar a população inicial aleatoriamente
 def createInitialPopulation(instance, size):
   population = [
-    np.random.choice(instance['jobsNumber'], instance['jobsNumber'], replace=False)
-    for i in range(size)
+    list( map(
+      lambda number: int(number + 1),
+      np.random.choice(instance['jobsNumber'], instance['jobsNumber'], replace=False)
+    )) for i in range(size)
   ]
 
   return population
@@ -110,11 +113,11 @@ def calcPopulationSize(instance):
 # - Função para fazer a recombinação e gerar soluções filhas
 def recombination(selectedPopulation, instance):
   children = []
-  defaultList = list(range(20))
+  defaultList = list(range(1, instance['jobsNumber'] + 1))
 
   for parents in selectedPopulation:
     # Gera indice de corte
-    randomHalf = random.randint(0, instance['jobsNumber'])
+    randomHalf = random.randint(0, instance['jobsNumber'] - 1)
 
     # Cria filho apartir do corte dos pais
     child = np.array([
@@ -149,6 +152,7 @@ def shift(newSolution, instance):
 
   return newSolution
 
+# - Função para atualizar a melhor solução
 def updateBestSolution(evaluatedPopulation, bestSolution):
   # Pega primeira população, pois elas vão estar ordenadas pela aptidão
   currentBestSolution = evaluatedPopulation[0]
@@ -158,40 +162,73 @@ def updateBestSolution(evaluatedPopulation, bestSolution):
 
   return bestSolution
 
-########## PROGRAMA PRINCIPAL ##########
+# - Função para gerar relatorio
+def saveReport(report):
+  # Abre o arquivo no modo escrita
+  with open( "report.csv", 'w' ) as file:
 
+    # Cria writer e escreve header
+    writer = csv.writer(file)
+    writer.writerow([
+      'Instancia',       'Lower bound',             'Upper bound',
+      'Média (Aptidão)', 'Desvio padrão (Aptidão)', 'Variancia (Aptidão)', 'Mediana (Aptidão)',
+      'Média (Tempo)',   'Desvio padrão (Tempo)',   'Variancia (Tempo)',   'Mediana (Tempo)'
+    ])
+
+    # Pega dados da instancia e escreve body
+    for instance in report:
+      aptitudes = [item['aptitude'] for item in instance['solutions']]
+      times = [item['endTime'] for item in instance['solutions']]
+
+      print(instance['name'], aptitudes, times)
+      writer.writerow([
+        instance['name'],   min(aptitudes),    max(aptitudes),
+        np.mean(aptitudes), np.std(aptitudes), np.var(aptitudes), np.median(aptitudes),
+        np.mean(times),     np.std(times),     np.var(times),     np.median(times)
+      ])
+
+    # Fecha arquivo
+    file.close()
+
+########## PROGRAMA PRINCIPAL ##########
 fileList = [
   { 'name': 'tai20_5.txt',   'jobsNumber': 20,  'machinesNumber': 5  },
-  # { 'name': 'tai20_10.txt',  'jobsNumber': 20,  'machinesNumber': 10 },
-  # { 'name': 'tai20_20.txt',  'jobsNumber': 20,  'machinesNumber': 20 },
-  # { 'name': 'tai50_5.txt',   'jobsNumber': 50,  'machinesNumber': 5  },
-  # { 'name': 'tai50_10.txt',  'jobsNumber': 50,  'machinesNumber': 10 },
-  # { 'name': 'tai50_20.txt',  'jobsNumber': 50,  'machinesNumber': 20 },
-  # { 'name': 'tai100_5.txt',  'jobsNumber': 100, 'machinesNumber': 5  },
-  # { 'name': 'tai100_10.txt', 'jobsNumber': 100, 'machinesNumber': 10 },
-  # { 'name': 'tai100_20.txt', 'jobsNumber': 100, 'machinesNumber': 20 },
-  # { 'name': 'tai200_10.txt', 'jobsNumber': 200, 'machinesNumber': 10 },
+  { 'name': 'tai20_10.txt',  'jobsNumber': 20,  'machinesNumber': 10 },
+  { 'name': 'tai20_20.txt',  'jobsNumber': 20,  'machinesNumber': 20 },
+  { 'name': 'tai50_5.txt',   'jobsNumber': 50,  'machinesNumber': 5  },
+  { 'name': 'tai50_10.txt',  'jobsNumber': 50,  'machinesNumber': 10 },
+  { 'name': 'tai50_20.txt',  'jobsNumber': 50,  'machinesNumber': 20 },
+  { 'name': 'tai100_5.txt',  'jobsNumber': 100, 'machinesNumber': 5  },
+  { 'name': 'tai100_10.txt', 'jobsNumber': 100, 'machinesNumber': 10 },
+  { 'name': 'tai100_20.txt', 'jobsNumber': 100, 'machinesNumber': 20 },
+  { 'name': 'tai200_10.txt', 'jobsNumber': 200, 'machinesNumber': 10 },
 ]
 
 # Le instancias
 instanceList = readInstances(fileList)
+# Monta relatorio inicial
+report = [ dict({ 'name': instance['name'], 'solutions': [] }) for instance in instanceList ]
 # Percorre instancias
-for instance in instanceList:
+for index, instance in enumerate(instanceList):
   # Calcula tamanho da população
   populationSize = calcPopulationSize(instance)
+  # Inicia melhores soluções de acordo com relatorio
+  bestSolutions = report[index]['solutions']
   # Executa 10 vezes cada instancia
   for instanceAttempt in range(10):
     # Monta melhor solução para execução
     bestSolution = { 'population': [], 'aptitude': sys.maxsize, 'endTime': 0 }
+    # Começa a geração
+    generationNumber = 0
     # Começa a marcar o tempo
     startTime = time.time()
     # Cria população inicial
     population = createInitialPopulation(instance, populationSize)
     # Percorre até chegar em uma condição de break
     while True:
-      if 1 <= time.time() - startTime:
+      if 120 <= time.time() - startTime:
         break
-      if False:
+      if generationNumber >= 2000:
         break
       # Avalia a população
       evaluatedPopulation = evaluatePopulation(instance, population)
@@ -205,54 +242,13 @@ for instance in instanceList:
       newSolution = shift(newSolution, instance)
       # Seleciona a nova nova geração para ser a população
       population = newSolution
+      # Atualiza numero da geração
+      generationNumber += 1
     # Grava tempo final
     bestSolution['endTime'] = time.time() - startTime
-
-    print(bestSolution)
-
-
-########## Anotações ##########
-# Ler arquivos com instancias
-#   - Deve se ler apenas a primeira instancia de cada arquivo
-#   - Ver qual dados vamos usar para poder montar na instancia
-#   -> lerInstancias(lista de arquivos)
-
-# Marcar tempo inicial de execução
-#   - Utilizar time para marcar tempo inicial
-#   -> tempoInicial = time.time()
-
-# Gerar sequencia de tarefas aleatorias
-#   - As sequencias de tarefas, devem conter o numero de tarefas
-#   - Ver quantos dados vamos gerar
-#     - math.round(
-#       math.pow (
-#         math.log( math.factorial(NUMERO_DE_TAREFAS) ),
-#         math.log( math.factorial(NUMERO_DE_MAQUINAS) )
-#       )
-#     )
-
-# Pegar sequencia de tarefas e avaliar
-#   - Avaliar sequencia de tarefas usando o codigo do professor
-#   -> makespan(instancia, solução)
-
-# Observar se os criterios de paradas foram atendidos
-#   - Criterio de tempo maximo
-#   - Criterio que se o programa não apresentar um tempo melhor nas 10 proximas gerações para
-
-# Recombinar sequencia de tarefas
-#   - Gerar sequencia de soluções filhas
-#   - Ver qual tipo de dencedencia vamos usar
-#   - Vamos ver ainda
-
-# Fazer a mutação das sequencias de tarefas
-#   - Fazer uma pequena alteração nos dados
-#   -> Sortear numero de elementos baseado no NUMERO_DE_TAREFAS para trocar de posição
-
-# Marcar tempo total final
-#   -> time.time() - tempoInicial
-
-# Deve se executar tudo 10 vezes para cada instancia
-
-# Fazer calculos necessarios
-
-# Pegar dados para montar relatorio
+    # Junta solução com outras
+    bestSolutions.append(bestSolution)
+  # Ajusta relatorio com soluções
+  report[index]['solutions'] = bestSolutions
+# Gera relatorio dos resultados
+saveReport(report)
