@@ -184,7 +184,7 @@ def saveReport(report):
       print(instance['name'], aptitudes, times)
       writer.writerow([
         instance['name'],
-        min(aptitudes),     max(aptitudes),    min(times),        max(times)
+        min(aptitudes),     max(aptitudes),    min(times),        max(times),
         np.mean(aptitudes), np.std(aptitudes), np.var(aptitudes), np.median(aptitudes),
         np.mean(times),     np.std(times),     np.var(times),     np.median(times)
       ])
