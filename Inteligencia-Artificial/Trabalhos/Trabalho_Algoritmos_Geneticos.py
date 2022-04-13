@@ -170,7 +170,8 @@ def saveReport(report):
     # Cria writer e escreve header
     writer = csv.writer(file)
     writer.writerow([
-      'Instancia',       'Lower bound',             'Upper bound',
+      'Instancia',
+      'Lower bound',     'Upper bound',             'Menor Tempo',         'Maior Tempo',
       'Média (Aptidão)', 'Desvio padrão (Aptidão)', 'Variancia (Aptidão)', 'Mediana (Aptidão)',
       'Média (Tempo)',   'Desvio padrão (Tempo)',   'Variancia (Tempo)',   'Mediana (Tempo)'
     ])
@@ -182,7 +183,8 @@ def saveReport(report):
 
       print(instance['name'], aptitudes, times)
       writer.writerow([
-        instance['name'],   min(aptitudes),    max(aptitudes),
+        instance['name'],
+        min(aptitudes),     max(aptitudes),    min(times),        max(times)
         np.mean(aptitudes), np.std(aptitudes), np.var(aptitudes), np.median(aptitudes),
         np.mean(times),     np.std(times),     np.var(times),     np.median(times)
       ])
