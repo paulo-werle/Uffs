@@ -226,10 +226,10 @@ for index, instance in enumerate(instanceList):
     population = createInitialPopulation(instance, populationSize)
     # Percorre até chegar em uma condição de break
     while True:
-      if 120 <= time.time() - startTime:
+      if 30 <= time.time() - startTime:
         print(f"Finalizado {instanceAttempt} - {instance['name']}")
         break
-      if generationNumber >= 2000:
+      if generationNumber >= 500:
         print(f"Finalizado {instanceAttempt} - {instance['name']}")
         break
       # Avalia a população
