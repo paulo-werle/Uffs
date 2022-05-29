@@ -1,4 +1,5 @@
 import math
+import csv
 
 # ------ Funções ------
 # Função para ler instancias
@@ -6,7 +7,7 @@ def readInstances(fileNames):
   instanceList = []
 
   for fileName in fileNames:
-    with open( f"Instances/{fileName}", 'r' ) as file:
+    with open( f"../Instances/{fileName}.tsp", 'r' ) as file:
       instance = []
       lines = file.read().splitlines()
       content = lines[(lines.index('NODE_COORD_SECTION') + 1):lines.index('EOF')]
@@ -30,10 +31,10 @@ def readInstances(fileNames):
 # Função para escrever instancias
 def writeInstances(instaceList):
   for instace in instaceList:
-    with open( f"Prepared-Instances/{instace['name']}", 'w' ) as file:
+    with open( f"../Prepared-Instances/{instace['name']}.csv", 'w' ) as file:
       for line in instace['adjacencyMatrix']:
-        file.write(str(line))
-        file.write('\n')
+        writer = csv.writer(file)
+        writer.writerow(line)
 
 # Função para calcular a Distância euclidiana
 def calculateEuclideanDistance(point1, point2):
@@ -62,7 +63,7 @@ def createAdjacencyMatrix(instance):
 
 
 # ------ Programa ------
-fileNames = ['Argentina.tsp']
+fileNames = ['Western-Sahara']
 
 instaceList = readInstances(fileNames)
 
