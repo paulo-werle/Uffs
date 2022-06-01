@@ -107,6 +107,40 @@ def randomSolutionAlgorithm(matrix):
   result['average'] = statistics.mean(costs)
   return result
 
+def bruteForceSolution(matrix, option, options, previous):
+  options.remove(option)
+  solutions = []
+
+  if not options:
+    return { f'{previous}_{option}': matrix[previous][option] }
+
+  for handleOption in options:
+    handleOptions = options.copy()
+
+    result = bruteForceSolution(matrix, handleOption, handleOptions, option)
+    solutions.append({
+      f'{previous}_{option}': {
+        'way': result,
+        'cost': matrix[previous][option]
+      }
+    })
+
+  return solutions
+
+# Função do algoritmo de solução força bruta
+def bruteForceSolutionAlgorithm(matrix):
+  size = len(matrix)
+  solutions = []
+  options = list(range(1, size))
+
+  for handleOption in options:
+    handleOptions = options.copy()
+
+    result = bruteForceSolution(matrix, handleOption, handleOptions, 0)
+    solutions.append(result)
+
+  print(solutions)
+
 # ------ Programa ------
 # Define nome dos arquivos usados
 fileNames = ['Western-Sahara']
@@ -117,4 +151,8 @@ for instance in instaceList:
   # Cria matriz de ajacencia
   instance['adjacencyMatrix'] = createAdjacencyMatrix(instance)
   # Usa solução do algoritmo aleatorio
-  resultRandom = randomSolutionAlgorithm(instance['adjacencyMatrix'])
+  # resultRandom = randomSolutionAlgorithm(instance['adjacencyMatrix'])
+  # Usa solução por força bruta
+  bruteForceSolutionAlgorithm(instance['adjacencyMatrix'])
+
+writeInstances(instaceList)
