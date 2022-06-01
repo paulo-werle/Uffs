@@ -1,5 +1,9 @@
+import statistics
+import random
+import time
 import math
 import csv
+import sys
 
 # ------ Funções ------
 # Função para ler instancias
@@ -61,13 +65,56 @@ def createAdjacencyMatrix(instance):
 
   return matrix
 
+# Função para gerar solução aleatoria
+def randomSolution(matrix, size, bestSolution):
+  order = random.sample(range(0, size), size)
+  previous = order[-1]
+  solution = []
+
+  for current in order:
+    solution.append(matrix[previous][current])
+    previous = current
+
+  cost = sum(solution)
+  if bestSolution['cost'] > cost:
+    bestSolution['cost'] = cost
+    bestSolution['way'] = solution
+
+  return bestSolution
+
+# Função do algoritmo de soluções aleatorias
+def randomSolutionAlgorithm(matrix):
+  result = {'way': [], 'cost': sys.maxsize, 'average': sys.maxsize }
+  size = len(matrix)
+  solutions = []
+  costs = []
+
+  for _index in range(10):
+    initialTime = time.time()
+    solution = {'way': [], 'cost': sys.maxsize }
+
+    while ((time.time() - initialTime) <= 30):
+      solution = randomSolution(matrix, size, solution)
+
+    solutions.append(solution)
+
+  for solution in solutions:
+    costs.append(solution['cost'])
+
+    if result['cost'] > solution['cost']:
+      result = solution
+
+  result['average'] = statistics.mean(costs)
+  return result
 
 # ------ Programa ------
+# Define nome dos arquivos usados
 fileNames = ['Western-Sahara']
-
+# Le arquivos
 instaceList = readInstances(fileNames)
-
+# Percorre instancias
 for instance in instaceList:
+  # Cria matriz de ajacencia
   instance['adjacencyMatrix'] = createAdjacencyMatrix(instance)
-
-writeInstances(instaceList)
+  # Usa solução do algoritmo aleatorio
+  resultRandom = randomSolutionAlgorithm(instance['adjacencyMatrix'])
