@@ -81,7 +81,7 @@ def createAdjacencyMatrix(instance):
 
 # ------ Programa ------
 # Define arquivos a serem usados
-fileNames = ['Western-Sahara']
+fileNames = ['Djibouti', 'Qatar', 'Uruguay', 'Western Sahara', 'Zimbabwe']
 
 # Faz a leitura dos dados do arquivo
 instaceList = readInstances(fileNames)
