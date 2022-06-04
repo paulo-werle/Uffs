@@ -9,7 +9,7 @@ def readInstances(fileNames):
 
   # Percorre cada arquivo
   for fileName in fileNames:
-    with open( f"../Instances/{fileName}.tsp", 'r' ) as file:
+    with open( f"../instances/{fileName}.tsp", 'r' ) as file:
       instance = []
       lines = file.read().splitlines()
 
@@ -40,7 +40,7 @@ def writeInstances(instaceList):
 
   # Percorre instancias
   for instace in instaceList:
-    with open( f"../Prepared-Instances/{instace['name']}.csv", 'w' ) as file:
+    with open( f"../prepared-instances/{instace['name']}.csv", 'w' ) as file:
 
       # Percorre linhas da matrix de adjacencia
       for line in instace['adjacencyMatrix']:

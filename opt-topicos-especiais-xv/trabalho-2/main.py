@@ -20,7 +20,7 @@ def readInstances(fileNames):
 
   # Percorre cada arquivo
   for fileName in fileNames:
-    with open( f"../Instances/{fileName}.tsp", 'r' ) as file:
+    with open( f"../instances/{fileName}.tsp", 'r' ) as file:
       instance = []
       lines = file.read().splitlines()
 
