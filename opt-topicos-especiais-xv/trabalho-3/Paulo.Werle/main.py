@@ -1,14 +1,12 @@
-# import statistics
+import statistics
 import random
 import time
 import csv
-# import sys
+import sys
 
 # ------ Funções ------
 # Função para ler instancias
 def readPreparedInstances(fileNames):
-
-  # Inicia lista de instancias
   instanceList = []
 
   # Percorre cada arquivo
@@ -29,8 +27,8 @@ def readPreparedInstances(fileNames):
   return instanceList
 
 # Função para avaliar o caminho
-def evaluatePath(path, instance):
-
+def evaluatePath(pathStructure, instance):
+  path = pathStructure['path']
   matrix = instance['content']
   lIndex = path[-1]
   result = []
@@ -40,225 +38,185 @@ def evaluatePath(path, instance):
     result.append(int( matrix[lIndex][index] ))
     lIndex = index
 
-  return { 'path': path, 'cost': sum(result) }
+  return {
+    'path': pathStructure['path'],
+    'ids': pathStructure['ids'],
+    'cost': sum(result)
+  }
 
 # Função para gerar caminho inicial
 def generateInitialPath(instance):
   size = len(instance['content'])
+  intialStructure = { 'path': random.sample(range(size), size), 'ids': [] }
 
-  return evaluatePath(
-    random.sample(range(size), size),
-    instance
-  )
+  return evaluatePath(intialStructure, instance)
 
-# Função para gerar tempos
+# Função para calcular tempos
 def calculateTime(instance):
-  matrixSize = len(instance['content'])
+  size = len(instance['content'])
 
   # Regra de 3 para calcular tempo proporcional
-  return (matrixSize * 60) / 1000
+  return (size * 60) / 1000
 
-# Função para gerar 2OP2
-def handle2Opt(path, xId, yId):
-  if xId != yId:
-    minId = min(xId, yId)
-    maxId = max(xId, yId)
+# Função para calcular mandato
+def calculateMandate(instance):
+  size = len(instance['content'])
 
-    generatedPath = [
-      *path[:minId],
-      *reversed(path[minId:maxId]),
-      *path[maxId:]
-    ]
+  return round(size / 5)
 
-  return generatedPath
+# Função para alterar com 2OP2
+def handle2Opt(pathStructure, xId, yId):
+  minId, maxId = sorted([xId, yId])
+  path = pathStructure['path']
+
+  generatedPath = [
+    *path[:minId],
+    *reversed(path[minId:maxId]),
+    *path[maxId:]
+  ]
+
+  return { 'path': generatedPath, 'ids': [minId, maxId] }
+
+# Função para comparar melhor caminho
+def comparePaths(current, best):
+  return current if current['cost'] <= best['cost'] else best
+
+# Função para lidar com tabus
+def handleTaboo(tabooStructure, currentStructure):
+  for taboo in tabooStructure:
+    # Verefica se deve remover tabu
+    if taboo['mandate'] == instance['mandate']:
+      tabooStructure.remove(taboo)
+
+    # Contador do mandato
+    taboo['mandate'] = taboo['mandate'] + 1
+
+  # Adiciona tabu
+  tabooStructure.append({ 'ids': currentStructure['ids'], 'mandate': 0 })
+
+# Função para verefica se é tabu
+def isTaboo(tabooStructure, pathStructure):
+  # Monta um array com os tabus ids
+  tabooIds = map(lambda taboo: taboo['ids'], tabooStructure)
+
+  return sorted(pathStructure['ids']) in tabooIds
+
+# Função para buscar melhor solução
+def handleSortingSolutions(solutions, pathStructure, tabooStructure):
+  sortedSolutions = sorted( solutions, key = lambda solution: solution['cost'] )
+
+  # Considera se o elemento não é tabu, ou se passa no criterio de aspiração
+  for solution in sortedSolutions:
+    if not isTaboo(tabooStructure, solution) or solution['cost'] < pathStructure['cost']:
+      return solution
 
 # Função para gerar os paths
-def generatePaths(instance, current, sTime):
+def generatePaths(instance, pathStructure, sTime, tabooStructure):
+  generatedSolutions = []
   size = len(instance['content'])
-  path = current['path']
+  currentBestPath = pathStructure
 
   for xId in range(size):
     for yId in range(size):
+      if xId != yId:
+        # Combinar como 2OPT
+        generatedPath = handle2Opt(currentBestPath, xId, yId)
+        # Avalia caminho gerado
+        evaluatedPath = evaluatePath(generatedPath, instance)
+        # Adiciona caminho gerado nas soluções
+        generatedSolutions.append(evaluatedPath)
 
-      # Combinar como 2OPT
-      generatedPath = handle2Opt(path, xId, yId)
-      print(generatedPath)
+      # Condição de parada por tempo
+      if (time.time() - sTime) >= instance['time']:
+        break
 
-    # Condição de parada por tempo
-    if (time.time() - sTime) >= instance['time']:
-      break
+  # Seleciona melhor elemento não considerando tabus, mas com criterio des apiração
+  currentBestPath = handleSortingSolutions(generatedSolutions, pathStructure, tabooStructure)
 
+  return currentBestPath
 
 # Função para manipular as informações da busca local
 def handleLocalSearch(instance):
+  currentStructure = generateInitialPath(instance)
+  tabooStructure = []
   sTime = time.time()
 
   while True:
-    current = generateInitialPath(instance)
-
-    generatePaths(instance, current, sTime)
+    # Gera vizinhança do caminho
+    generatedStructure = generatePaths(instance, currentStructure, sTime, tabooStructure)
+    # Compara solução gerada com a atual
+    currentStructure = comparePaths(currentStructure, generatedStructure)
+    # Função para lidar com os tabus
+    handleTaboo(tabooStructure, currentStructure)
 
     # Condição de parada por tempo
     if (time.time() - sTime) >= instance['time']:
       break
 
+  # Marca tempo de execução
+  currentStructure['time'] = time.time() - sTime
 
+  return currentStructure
 
 # Função do algoritmo de busca local
 def localSearch(instance):
+  solutions = []
 
   # Gerar tempos de execução
   instance['time'] = calculateTime(instance)
 
-  # Função para manipular a busca local
-  handleLocalSearch(instance)
+  # Gerar tamanho do mandato
+  instance['mandate'] = calculateMandate(instance)
 
+  # Faz as 10 buscas locais
+  for index in range(10):
+    solutions.append( handleLocalSearch(instance) )
+    print(index, instance['name'], '- encerrou execução')
 
+  return solutions
 
-# # Função para calcular tempo maximo de cada instancia
-# def generateTime(instance):
-#   matrixSize = len(instance['content'])
+# Função para montar a saida da instancia
+def mountInstanceOutput(instance):
+  costValues = []
+  timeValues = []
 
-#   # Gerar tempo pela quantidade de pontos
-#   time = (matrixSize * 60) / 1000
+  for solution in instance['solutions']:
+    costValues.append(solution['cost'])
+    timeValues.append(solution['time'])
 
-#   # Adicionar tempo no objeto da instancia
-#   instance['time'] = time
+  return [
+    instance['name'],
+    'Paulo.Werle',
+    'BT2opt',
+    round(statistics.mean(costValues)),
+    round(statistics.stdev(costValues), 2),
+    round(statistics.mean(timeValues))
+  ]
 
-# # Função principal de busca local
-# def localSearch(instance):
-# #   solutions = []
+# Função para escrever a saida
+def writeOutput(outputs):
 
-#   # Gerar tempo linear para cada instancia
-#   generateTime(instance)
+  # Monta arquivo no formato escrita
+  with open( f"./resultados.csv", 'w' ) as file:
+    writer = csv.writer(file)
 
-#   # Achar melhor melhor com o 2OPT
-#   handlePaths(instance)
-#   # for _ in range(10):
-#   #   solutions.append(
-#   #   )
+    # Escreve cabeçalho
+    writer.writerow([
+      'instancia',
+      'autoria',
+      'algoritmo',
+      'q-medio',
+      'q-desvio',
+      't-medio'
+    ])
 
-#   # return solutions
+    # Percorre saidas para escrever no arquivo
+    for output in outputs:
+      writer.writerow(output)
 
-# # Função para manipular os paths
-# def handlePaths(instance):
-#   markedTime = time.time()
-#   matrixSize = len(instance['content'])
-
-# #   # Gera caminho aleatorio inicial
-#   randomPath = random.sample(range(matrixSize), matrixSize)
-#   solution = analyzePath(randomPath, instance)
-
-#   while True:
-#     # Gera soluções visinhas
-#     generatedSolution = generatePaths(solution, instance, markedTime)
-
-#   #   # Condição de parada por tempo
-#   #   if (time.time() - markedTime) >= instance['time']:
-#   #     print(instance['name'], '- foi parado pela condição de tempo')
-#   #     break
-
-#   #   # Condição de parada por não melhorar
-#   #   if generatedSolution['cost'] >= solution['cost']:
-#   #     print(instance['name'], '- foi parado pela condição de melhorar')
-#   #     break
-
-#   #   solution = generatedSolution
-
-#   # # Marca tempo que finalizou
-#   # solution['time'] = time.time() - markedTime
-
-#   # return solution
-
-# # Função para gerar os paths da vizinhança
-# def generatePaths(solution, instance, markedTime):
-
-#   matrixSize = len(instance['content'])
-#   path = solution['path']
-
-#   for xIndex in range(matrixSize):
-#     for yIndex in range(matrixSize):
-#       if xIndex != yIndex:
-#         minIndex = min(xIndex, yIndex)
-#         maxIndex = max(xIndex, yIndex)
-
-#         # Gera caminho com o conceito do 2OPT
-#         generatedPath = [
-#           *path[:minIndex],
-#           *reversed(path[minIndex:maxIndex]),
-#           *path[maxIndex:]
-#         ]
-
-#         # Analisa custo do caminho gerado
-#         generatedSolution = analyzePath(generatedPath, instance)
-
-#         # Verefica se é melhor
-#         if generatedSolution['cost'] <= solution['cost']:
-#           solution = generatedSolution
-
-#     # Condição de parada por tempo
-#     if (time.time() - markedTime) >= instance['time']:
-#       break
-
-#   # # Retorna a melhor melhor
-#   # return solution
-
-# # Função para gerar vizinhança com a 2OPt
-# # def generatePath(path, xIndex, yIndex):
-# #   minIndex = min(xIndex, yIndex)
-# #   maxIndex = max(xIndex, yIndex)
-
-# #   generatedPath = [
-# #     *path[:minIndex],
-# #     *reversed(path[minIndex:maxIndex]),
-# #     *path[maxIndex:]
-# #   ]
-
-# #   return generatedPath
-
-# # Função para montar a saida da instancia
-# def mountInstanceOutput(instance):
-#   costValues = []
-#   timeValues = []
-
-#   for solution in instance['solutions']:
-#     costValues.append(solution['cost'])
-#     timeValues.append(solution['time'])
-
-#   return [
-#     instance['name'],
-#     'Paulo.Werle',
-#     'BT2opt',
-#     round(statistics.mean(costValues)),
-#     round(statistics.stdev(costValues), 2),
-#     round(statistics.mean(timeValues))
-#   ]
-
-# # Função para escrever a saida
-# def writeOutput(outputs):
-
-#   # Monta arquivo no formato escrita
-#   with open( f"./resultados.csv", 'w' ) as file:
-#     writer = csv.writer(file)
-
-#     # Escreve cabeçalho
-#     writer.writerow([
-#       'instancia',
-#       'autoria',
-#       'algoritmo',
-#       'q-medio',
-#       'q-desvio',
-#       't-medio'
-#     ])
-
-#     # Percorre saidas para escrever no arquivo
-#     for output in outputs:
-#       writer.writerow(output)
-
-# # ------ Programa ------
-# fileNames = ['Djibouti', 'Qatar', 'Uruguay', 'Western Sahara', 'Zimbabwe']
-# outputs = []
-fileNames = ['Western Sahara']
+# ------ Programa ------
+fileNames = ['Djibouti', 'Qatar', 'Uruguay', 'Western Sahara', 'Zimbabwe']
+outputs = []
 
 # Faz a leitura dos dados do arquivo
 instaceList = readPreparedInstances(fileNames)
@@ -267,13 +225,13 @@ instaceList = readPreparedInstances(fileNames)
 for instance in instaceList:
 
   # Executa algoritmo de busca local
-  localSearch(instance)
+  instance['solutions'] = localSearch(instance)
 
-#   # Monta saida
-#   # instanceOutput = mountInstanceOutput(instance)
+  # Monta saida
+  instanceOutput = mountInstanceOutput(instance)
 
-#   # Adiciona saida da instancia as saidas
-#   # outputs.append(instanceOutput)
+  # Adiciona saida da instancia as saidas
+  outputs.append(instanceOutput)
 
-# # Escreve saidas no arquivo
-# # writeOutput(outputs)
+# Escreve saidas no arquivo
+writeOutput(outputs)
