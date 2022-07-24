@@ -1,0 +1,29 @@
+- Exemplos de como usar thread
+  sem_t semaphore;
+  pthread_t thread1, thread2;
+
+  sem_init(&semaphore, 0, 0);
+  pthread_create(&thread1, NULL, &thread1Function, NULL);
+  pthread_create(&thread2, NULL, &thread2Function, NULL);
+  pthread_join(thread1, NULL);
+  pthread_join(thread1, NULL);
+  sem_destroy(&semaphore);
+
+  void *thread1Function() {
+    int i;
+    for ( i = 0; i <= 100; i++) {
+      printf("1 => %d \n", i);
+      sleep(1);
+      sem_wait(&semaphore);
+    }
+  }
+
+  void *thread2Function() {
+    int i;
+    for ( i = 0; i <= 100; i++) {
+      printf("2 => %d \n", i);
+      sleep(1);
+      if ( !(i % 10) )
+        sem_post(&semaphore);
+    }
+  }

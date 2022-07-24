@@ -1,0 +1,6 @@
+Aqui vamos listar as prioridades que temos para o trabalho
+
+1 - Colocar valores que se usa em varias funções como variaveis globais
+2 - Separar o que cada arquivo vai conter
+3 - Refatorar parte de ler arquivos e armazenar informações
+4 - Começar a desenvolver a parte de cada thread
