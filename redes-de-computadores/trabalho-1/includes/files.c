@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../includes.h"
 #include "../dataStructure.c"
+#include "../importers.h"
 
 extern Information *information;
 

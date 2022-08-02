@@ -2,10 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../includes.h"
 #include "../dataStructure.c"
+#include "../importers.h"
 
-// Arquivos de funções para ajuda
 void reportError(char *message) {
   perror(message);
   exit(1);
