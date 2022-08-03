@@ -13,5 +13,6 @@ List *insertInTheList(List *list, MessageStructure *msg);
 void startSocket();
 
 // threads
+void *receiverFn();
 void *senderFn();
 void *terminalFn();

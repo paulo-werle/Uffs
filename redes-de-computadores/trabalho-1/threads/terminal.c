@@ -1,4 +1,5 @@
 #include <pthread.h>
+#include <semaphore.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +16,9 @@ extern pthread_mutex_t exitMt;
 
 // Listas
 extern List *exitList;
+
+// Semáforos
+extern sem_t senderSm;
 
 int menuOptions() {
   int option;
@@ -59,36 +63,31 @@ MessageStructure *createStructure() {
   return msg;
 }
 
-void sendMessage() {
+void scheduleShipping() {
   MessageStructure *msg = createStructure();
 
   pthread_mutex_lock(&exitMt);
   exitList = insertInTheList(exitList, msg);
-  pthread_mutex_unlock(&exitMt);
 
-  // List *aux = exitList;
-  // while (aux != NULL) {
-  //   printf("%s \n", aux->messageStructure->message);
-  //   aux = aux->next;
-  // }
+  pthread_mutex_unlock(&exitMt);
+  sem_post(&senderSm);
 }
 
 void *terminalFn() {
   while (true) {
-    // int option = menuOptions();
+    int option = menuOptions();
 
-    // switch(option) {
-    //   case 1 :
-    //     sendMessage();
-    //     break;
+    switch(option) {
+      case 1 :
+        scheduleShipping();
+        break;
 
-    //   case 2 :
-    //     break;
+      case 2 :
+        break;
 
-    //   case 0 :
-    //     exit(0);
-    //     break;
-    // }
-    sendMessage();
+      case 0 :
+        exit(0);
+        break;
+    }
   }
 }

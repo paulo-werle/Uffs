@@ -19,14 +19,20 @@ extern sem_t senderSm;
 
 // Socket
 extern int sSocket;
-extern struct sockaddr_in socketAddr;
+extern struct sockaddr_in senderAddr;
+extern struct sockaddr_in receiverAddr;
 
-void sendMessageTo(MessageStructure *msg) {
-  int lenSocket = sizeof(socketAddr);
+void sendMessage(MessageStructure *msg) {
+  int lenSocket = sizeof(senderAddr);
+  int code;
 
-  int code = sendto(
+  senderAddr.sin_port = htons(msg->destination->port);
+  if (!inet_aton(msg->destination->ip, &senderAddr.sin_addr))
+    reportError("Socket - InetAton error\n");
+
+  code = sendto(
     sSocket, msg->message, strlen(msg->message), 0,
-    (struct sockaddr *) &socketAddr, lenSocket
+    (struct sockaddr *) &senderAddr, lenSocket
   );
 
   if (code == ERROR_CODE)
@@ -34,18 +40,9 @@ void sendMessageTo(MessageStructure *msg) {
 }
 
 void *senderFn() {
-
   while(true) {
     sem_wait(&senderSm);
-    printf("Chegou uma mensagem aqui \n");
-
-    sendMessageTo(exitList->messageStructure);
+    sendMessage(exitList->messageStructure);
     exitList = removeFromList(exitList);
   }
-  // List *aux = exitList;
-  // while (aux != NULL) {
-  //   printf("%s \n", aux->messageStructure->message);
-  //   aux = aux->next;
-  // }
-  // printf("Veio para a thread de envio \n");
 }

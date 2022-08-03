@@ -20,6 +20,7 @@ List *exitList;
 // Threads
 pthread_t terminalTh;
 pthread_t senderTh;
+pthread_t receiverTh;
 
 // Mutexes
 pthread_mutex_t exitMt;
@@ -29,7 +30,8 @@ sem_t senderSm;
 
 // Socket
 int sSocket;
-struct sockaddr_in socketAddr;
+struct sockaddr_in senderAddr;
+struct sockaddr_in receiverAddr;
 
 void createSemaphores() {
   sem_init(&senderSm, 0, 0);
@@ -42,10 +44,13 @@ void destroySemaphores() {
 void createThreads() {
   pthread_create(&terminalTh, NULL, &terminalFn, NULL);
   pthread_create(&senderTh,   NULL, &senderFn,   NULL);
+  pthread_create(&receiverTh, NULL, &receiverFn, NULL);
 }
 
 void destroyThreads() {
   pthread_join(terminalTh, NULL);
+  pthread_join(senderTh,   NULL);
+  pthread_join(receiverTh, NULL);
 }
 
 int main(int number, char *args[]) {
