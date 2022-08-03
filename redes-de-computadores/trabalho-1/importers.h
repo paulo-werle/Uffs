@@ -1,24 +1,17 @@
-// threads
-void *terminalFn();
-
 // files.c
-void setInformation(
-  int id
-);
-
-// lists.c
-List *insertInTheList(
-  List *list,
-  MessageStructure *msg
-);
+void setInformation(int id);
 
 // helpers.c
-void reportError(
-  char *message
-);
+void reportError(char *message);
+int executionArguments(int number, char *args[]);
 
-int executionArguments(
-  int number,
-  char *args[]
-);
+// lists.c
+List *removeFromList(List *list);
+List *insertInTheList(List *list, MessageStructure *msg);
 
+// sockets.c
+void startSocket();
+
+// threads
+void *senderFn();
+void *terminalFn();

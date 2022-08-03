@@ -1,3 +1,4 @@
+#include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,11 +7,16 @@
 #include "../importers.h"
 #define MESSAGE_SIZE 512
 
+// Informações do roteador
 extern Information *information;
 
+// Mutexes
+extern pthread_mutex_t exitMt;
+
+// Listas
 extern List *exitList;
 
-int displayMenuOptions() {
+int menuOptions() {
   int option;
 
   printf("Digite a opção desejada \n");
@@ -55,25 +61,21 @@ MessageStructure *createStructure() {
 
 void sendMessage() {
   MessageStructure *msg = createStructure();
+
+  pthread_mutex_lock(&exitMt);
   exitList = insertInTheList(exitList, msg);
+  pthread_mutex_unlock(&exitMt);
 
   // List *aux = exitList;
   // while (aux != NULL) {
   //   printf("%s \n", aux->messageStructure->message);
   //   aux = aux->next;
   // }
-
-  // printf(
-  //   "Origem: %d, Destino: %d, Mensagem: %s \n",
-  //   msg->source->id,
-  //   msg->destination->id,
-  //   msg->message
-  // );
 }
 
 void *terminalFn() {
   while (true) {
-    // int option = displayMenuOptions();
+    // int option = menuOptions();
 
     // switch(option) {
     //   case 1 :

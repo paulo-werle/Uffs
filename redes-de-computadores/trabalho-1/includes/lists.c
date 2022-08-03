@@ -24,3 +24,10 @@ List *insertInTheList(List *list, MessageStructure *msg) {
 
   return list;
 }
+
+List *removeFromList(List *list) {
+  List *auxE = list->next;
+
+  free(list);
+  return auxE;
+}
