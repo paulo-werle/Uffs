@@ -1,7 +1,7 @@
+#include <stdbool.h>
 // #include <arpa/inet.h>
 // #include <pthread.h>
 // #include <semaphore.h>
-// #include <stdbool.h>
 // #include <stdio.h>
 // #include <string.h>
 // #include <sys/socket.h>
@@ -39,10 +39,15 @@
 //     reportError("sendMessage - Erro ao enviar mensagem\n");
 // }
 
-void *receiver() {
-  // while(true) {
-  //   sem_wait(&senderSm);
-  //   sendMessage(exitList->messageStructure);
-  //   exitList = removeFromList(exitList);
-  // }
+void receiverMessage() {
+
+}
+
+void *receiverFn() {
+  while(true) {
+    receiverMessage();
+    // sem_wait(&senderSm);
+    // sendMessage(exitList->messageStructure);
+    // exitList = removeFromList(exitList);
+  }
 }
