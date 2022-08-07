@@ -2,8 +2,12 @@
 void setInformation(int id);
 
 // helpers.c
-void reportError(char *message);
 int executionArguments(int number, char *args[]);
+void reportError(char *message);
+void getMessage(char message[]);
+
+Router *getRouterInformation();
+MessageStructure *createStructure(Router *router, char message[]);
 
 // lists.c
 List *removeFromList(List *list);

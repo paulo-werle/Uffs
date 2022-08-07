@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../dataStructure.c"
 #include "../importers.h"
@@ -32,43 +33,20 @@ int menuOptions() {
   return option;
 }
 
-Router *findRouter(int idx) {
-  Router *router = NULL;
-  int idy;
-
-  for (idy = 0; idy <= information->connectionsNumber; idy++)
-    if (information->connections[idy].id == idx)
-      router = &information->connections[idy];
-
-  if (router == NULL)
-    reportError("findRouter - Roteador não encontrado \n");
-
-  return router;
-}
-
-MessageStructure *createStructure() {
-  MessageStructure *msg = malloc( sizeof(MessageStructure) );
-  int idx;
-
-  printf("Para qual roteador enviaremos a mensagem?: ");
-  scanf("%d%*c", &idx);
-
-  msg->source = information->current;
-  msg->destination = findRouter(idx);
-  msg->type = 0;
-
-  printf("Escreva a mensagem que será enviada: ");
-  fgets(msg->message, MESSAGE_SIZE, stdin);
-
-  return msg;
-}
-
 void scheduleShipping() {
-  MessageStructure *msg = createStructure();
+  char message[MESSAGE_SIZE];
+  Router *router;
 
+  // Obtem informações de envio
+  router = getRouterInformation();
+  getMessage(message);
+
+  // Monta estrutura para envio
+  MessageStructure *msg = createStructure(router, message);
+
+  // Prepara envio
   pthread_mutex_lock(&exitMt);
   exitList = insertInTheList(exitList, msg);
-
   pthread_mutex_unlock(&exitMt);
   sem_post(&senderSm);
 }

@@ -1,15 +1,13 @@
+#include <arpa/inet.h>
 #include <stdbool.h>
-// #include <arpa/inet.h>
-// #include <pthread.h>
-// #include <semaphore.h>
-// #include <stdio.h>
-// #include <string.h>
-// #include <sys/socket.h>
+#include <stdio.h>
+#include <sys/socket.h>
 
 #include "../dataStructure.c"
 #include "../importers.h"
 
-// #define ERROR_CODE -1
+#define MESSAGE_SIZE 512
+#define ERROR_CODE -1
 
 // // Listas
 // extern List *exitList;
@@ -17,10 +15,10 @@
 // // Semáforos
 // extern sem_t senderSm;
 
-// // Socket
-// extern int sSocket;
-// extern struct sockaddr_in senderAddr;
-// extern struct sockaddr_in receiverAddr;
+// Socket
+extern int sSocket;
+extern struct sockaddr_in senderAddr;
+extern struct sockaddr_in receiverAddr;
 
 // void sendMessage(MessageStructure *msg) {
 //   int lenSocket = sizeof(senderAddr);
@@ -40,14 +38,33 @@
 // }
 
 void receiverMessage() {
+  int lenSocket = sizeof(receiverAddr);
+  char msg[MESSAGE_SIZE];
+  int code;
 
+  code = recvfrom(
+    sSocket, msg, MESSAGE_SIZE, 0,
+    (struct sockaddr *) &receiverAddr, &lenSocket
+  );
+
+  if (code == ERROR_CODE)
+    reportError("sendMessage - Erro ao enviar mensagem \n");
+
+  // printf()
+  // printf(
+  //   "Received packet from %s:%d\n",
+  //   inet_ntoa(receiverAddr.sin_addr),
+  //   ntohs(receiverAddr.sin_port)
+  // );
+
+  // printf("Data: %s\n", msg);
 }
 
 void *receiverFn() {
-  while(true) {
-    receiverMessage();
-    // sem_wait(&senderSm);
-    // sendMessage(exitList->messageStructure);
-    // exitList = removeFromList(exitList);
-  }
+  // while(true) {
+  //   // receiverMessage();
+  //   // sem_wait(&senderSm);
+  //   // sendMessage(exitList->messageStructure);
+  //   // exitList = removeFromList(exitList);
+  // }
 }
