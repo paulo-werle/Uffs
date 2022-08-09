@@ -20,7 +20,6 @@ extern struct sockaddr_in receiverAddr;
 void prepareSocketToSend() {
   memset((char *) &senderAddr, 0, sizeof(senderAddr));
   senderAddr.sin_family = AF_INET;
-  // senderAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 }
 
 void prepareSocketToReceiver() {

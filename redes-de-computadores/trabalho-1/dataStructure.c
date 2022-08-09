@@ -13,8 +13,8 @@ typedef struct _router
 typedef struct _messageStructure
 {
   int type;
-  Router *source;
-  Router *destination;
+  Router source;
+  Router destination;
   char message[MESSAGE_SIZE];
 
 } MessageStructure;

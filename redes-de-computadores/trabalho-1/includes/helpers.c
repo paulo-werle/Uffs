@@ -51,11 +51,10 @@ Router *getRouterInformation() {
 
 MessageStructure *createStructure(Router *router, char message[]) {
   MessageStructure *msg = malloc( sizeof(MessageStructure) );
-  int idx;
 
-  msg->source = information->current;
+  msg->source = *information->current;
+  msg->destination = *router;
   strcpy(msg->message, message);
-  msg->destination = router;
   msg->type = 0;
 
   return msg;

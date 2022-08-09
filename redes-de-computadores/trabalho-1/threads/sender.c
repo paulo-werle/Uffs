@@ -26,12 +26,12 @@ void sendMessage(MessageStructure *msg) {
   int lenSocket = sizeof(senderAddr);
   int code;
 
-  senderAddr.sin_port = htons(msg->destination->port);
-  if (!inet_aton(msg->destination->ip, &senderAddr.sin_addr))
+  senderAddr.sin_port = htons(msg->destination.port);
+  if (!inet_aton(msg->destination.ip, &senderAddr.sin_addr))
     reportError("Socket - InetAton error\n");
 
   code = sendto(
-    sSocket, msg->message, strlen(msg->message), 0,
+    sSocket, msg, sizeof(MessageStructure), 0,
     (struct sockaddr *) &senderAddr, lenSocket
   );
 
