@@ -1,21 +1,5 @@
-#include <arpa/inet.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-
 #include "../dataStructure.c"
 #include "../importers.h"
-
-#define ERROR_CODE -1
-
-// Informações do roteador
-extern Information *information;
-
-// Socket
-extern int sSocket;
-extern struct sockaddr_in senderAddr;
-extern struct sockaddr_in receiverAddr;
 
 void prepareSocketToSend() {
   memset((char *) &senderAddr, 0, sizeof(senderAddr));

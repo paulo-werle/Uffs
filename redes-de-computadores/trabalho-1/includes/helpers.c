@@ -1,12 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "../dataStructure.c"
 #include "../importers.h"
-
-// Informações do roteador
-extern Information *information;
 
 int executionArguments(int number, char *args[]) {
   if (number != 2 || !strcmp(args[1], "--help")) {

@@ -1,25 +1,5 @@
-#include <pthread.h>
-#include <semaphore.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "../dataStructure.c"
 #include "../importers.h"
-#define MESSAGE_SIZE 512
-
-// Informações do roteador
-extern Information *information;
-
-// Mutexes
-extern pthread_mutex_t exitMt;
-
-// Listas
-extern List *exitList;
-
-// Semáforos
-extern sem_t senderSm;
 
 int menuOptions() {
   int option;

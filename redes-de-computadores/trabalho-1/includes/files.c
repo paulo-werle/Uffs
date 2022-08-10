@@ -1,11 +1,5 @@
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "../dataStructure.c"
 #include "../importers.h"
-
-extern Information *information;
 
 FILE *openReadFile(char path[]) {
   FILE* file = fopen(path, "r");

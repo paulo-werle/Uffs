@@ -1,26 +1,5 @@
-#include <arpa/inet.h>
-#include <pthread.h>
-#include <semaphore.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/socket.h>
-
 #include "../dataStructure.c"
 #include "../importers.h"
-
-#define ERROR_CODE -1
-
-// Listas
-extern List *exitList;
-
-// Semáforos
-extern sem_t senderSm;
-
-// Socket
-extern int sSocket;
-extern struct sockaddr_in senderAddr;
-extern struct sockaddr_in receiverAddr;
 
 void sendMessage(MessageStructure *msg) {
   int lenSocket = sizeof(senderAddr);
