@@ -5,6 +5,7 @@ List *insertInTheList(List *list, MessageStructure *msg) {
   List *auxE, *newE = malloc( sizeof(List) );
 
   newE->messageStructure = msg;
+  newE->next = NULL;
 
   if (list == NULL) {
     list = newE;
@@ -16,7 +17,6 @@ List *insertInTheList(List *list, MessageStructure *msg) {
       auxE = auxE->next;
 
     auxE->next = newE;
-    newE->next = NULL;
   }
 
   return list;

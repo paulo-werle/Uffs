@@ -22,6 +22,9 @@ void *senderFn() {
   while(true) {
     sem_wait(&senderSm);
     sendMessage(exitList->messageStructure);
+
+    pthread_mutex_lock(&exitMt);
     exitList = removeFromList(exitList);
+    pthread_mutex_unlock(&exitMt);
   }
 }

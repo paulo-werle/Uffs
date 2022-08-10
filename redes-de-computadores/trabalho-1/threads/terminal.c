@@ -31,6 +31,29 @@ void scheduleShipping() {
   sem_post(&senderSm);
 }
 
+void showReceived() {
+  pthread_mutex_lock(&receiverMt);
+  printf("----------> Mensagens recebidas <----------\n");
+
+  while (receiverList != NULL) {
+    printf(
+      "Roteador de origem: Id: %d Endereço: %s:%d \n",
+      receiverList->messageStructure->source.id,
+      receiverList->messageStructure->source.ip,
+      receiverList->messageStructure->source.port
+    );
+    printf(
+      "Mensagem: %s \n",
+      receiverList->messageStructure->message
+    );
+
+    receiverList = removeFromList(receiverList);
+  }
+
+  printf("-------------------------------------------\n");
+  pthread_mutex_unlock(&receiverMt);
+}
+
 void *terminalFn() {
   while (true) {
     int option = menuOptions();
@@ -41,6 +64,7 @@ void *terminalFn() {
         break;
 
       case 2 :
+        showReceived();
         break;
 
       case 0 :

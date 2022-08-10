@@ -10,7 +10,9 @@
 #include <unistd.h>
 
 #define MESSAGE_SIZE 512
+#define CONTROL_TYPE 1
 #define ERROR_CODE -1
+#define DATA_TYPE 0
 
 // ----- Variables -----
 // -- Informações do roteador
@@ -19,6 +21,7 @@ extern Information *information;
 // -- Listas
 extern List *entryList;
 extern List *exitList;
+extern List *receiverList;
 
 // -- Threads
 extern pthread_t terminalTh;
@@ -29,6 +32,7 @@ extern pthread_t packetHandlerTh;
 // -- Mutexes
 extern pthread_mutex_t entryMt;
 extern pthread_mutex_t exitMt;
+extern pthread_mutex_t receiverMt;
 
 // -- Semáforos
 extern sem_t senderSm;

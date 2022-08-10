@@ -28,5 +28,6 @@ void *receiverFn() {
     pthread_mutex_lock(&entryMt);
     entryList = insertInTheList(entryList, msg);
     pthread_mutex_unlock(&entryMt);
+    sem_post(&packetHandlerSm);
   }
 }

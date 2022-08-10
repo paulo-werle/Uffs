@@ -7,6 +7,7 @@ Information *information;
 // Listas
 List *entryList;
 List *exitList;
+List *receiverList;
 
 // Threads
 pthread_t terminalTh;
@@ -17,6 +18,7 @@ pthread_t packetHandlerTh;
 // Mutexes
 pthread_mutex_t entryMt;
 pthread_mutex_t exitMt;
+pthread_mutex_t receiverMt;
 
 // Semáforos
 sem_t senderSm;
