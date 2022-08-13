@@ -1,4 +1,5 @@
 #include <arpa/inet.h>
+#include <limits.h>
 #include <pthread.h>
 #include <semaphore.h>
 #include <stdbool.h>
@@ -10,9 +11,11 @@
 #include <unistd.h>
 
 #define MESSAGE_SIZE 512
+
 #define CONTROL_TYPE 1
-#define ERROR_CODE -1
 #define DATA_TYPE 0
+
+#define ERROR_CODE -1
 
 // ----- Variables -----
 // -- Informações do roteador

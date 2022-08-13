@@ -32,6 +32,8 @@ typedef struct Information
 {
   Router *current;
   Router *connections;
+  char *distances;
   int connectionsNumber;
+  int distancesNumber;
 
 } Information;
