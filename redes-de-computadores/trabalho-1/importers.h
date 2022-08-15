@@ -25,17 +25,20 @@ extern Information *information;
 extern List *entryList;
 extern List *exitList;
 extern List *receiverList;
+extern List *controlList;
 
 // -- Threads
 extern pthread_t terminalTh;
 extern pthread_t senderTh;
 extern pthread_t receiverTh;
 extern pthread_t packetHandlerTh;
+extern pthread_t signalTh;
 
 // -- Mutexes
 extern pthread_mutex_t entryMt;
 extern pthread_mutex_t exitMt;
 extern pthread_mutex_t receiverMt;
+extern pthread_mutex_t controlMt;
 
 // -- Semáforos
 extern sem_t senderSm;
@@ -55,7 +58,7 @@ int executionArguments(int number, char *args[]);
 void reportError(char *message);
 void getMessage(char message[]);
 Router *getRouterInformation();
-MessageStructure *createStructure(Router *router, char message[]);
+MessageStructure *createStructure(Router *router, char message[], int type);
 
 // -- lists.c
 List *removeFromList(List *list);
@@ -69,3 +72,4 @@ void *receiverFn();
 void *senderFn();
 void *terminalFn();
 void *packetHandlerFn();
+void *signalFn();

@@ -6,7 +6,8 @@ int menuOptions() {
 
   printf("Digite a opção desejada \n");
   printf("1 - Enviar mensagem \n");
-  printf("2 - Exibir mensagens recebidas \n");
+  printf("2 - Exibir mensagens de dados recebidas \n");
+  printf("3 - Exibir mensagens de controle recebidas \n");
   printf("0 - Finalizar \n");
   scanf("%d%*c", &option);
 
@@ -22,7 +23,7 @@ void scheduleShipping() {
   getMessage(message);
 
   // Monta estrutura para envio
-  MessageStructure *msg = createStructure(router, message);
+  MessageStructure *msg = createStructure(router, message, DATA_TYPE);
 
   // Prepara envio
   pthread_mutex_lock(&exitMt);
@@ -31,27 +32,37 @@ void scheduleShipping() {
   sem_post(&senderSm);
 }
 
-void showReceived() {
-  pthread_mutex_lock(&receiverMt);
+List *showMessages(List *list) {
   printf("----------> Mensagens recebidas <----------\n");
-
-  while (receiverList != NULL) {
+  while (list != NULL) {
     printf(
       "Roteador de origem: Id: %d Endereço: %s:%d \n",
-      receiverList->messageStructure->source.id,
-      receiverList->messageStructure->source.ip,
-      receiverList->messageStructure->source.port
+      list->messageStructure->source.id,
+      list->messageStructure->source.ip,
+      list->messageStructure->source.port
     );
     printf(
       "Mensagem: %s \n",
-      receiverList->messageStructure->message
+      list->messageStructure->message
     );
 
-    receiverList = removeFromList(receiverList);
+    list = removeFromList(list);
   }
-
   printf("-------------------------------------------\n");
+
+  return list;
+}
+
+void showDataReceived() {
+  pthread_mutex_lock(&receiverMt);
+  receiverList = showMessages(receiverList);
   pthread_mutex_unlock(&receiverMt);
+}
+
+void showControlReceived() {
+  pthread_mutex_lock(&controlMt);
+  controlList = showMessages(controlList);
+  pthread_mutex_unlock(&controlMt);
 }
 
 void *terminalFn() {
@@ -64,7 +75,11 @@ void *terminalFn() {
         break;
 
       case 2 :
-        showReceived();
+        showDataReceived();
+        break;
+
+      case 3 :
+        showControlReceived();
         break;
 
       case 0 :

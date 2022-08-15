@@ -31,9 +31,11 @@ typedef struct _list
 typedef struct Information
 {
   Router *current;
+
   Router *connections;
-  char *distances;
   int connectionsNumber;
+
+  char distances[MESSAGE_SIZE];
   int distancesNumber;
 
 } Information;

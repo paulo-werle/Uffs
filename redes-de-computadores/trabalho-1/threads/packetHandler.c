@@ -7,14 +7,21 @@ void handleDataType(MessageStructure *msg) {
   pthread_mutex_unlock(&receiverMt);
 }
 
+void handleControlType(MessageStructure *msg) {
+  pthread_mutex_lock(&controlMt);
+  controlList = insertInTheList(controlList, msg);
+  pthread_mutex_unlock(&controlMt);
+}
+
 void sortPackageType(MessageStructure *msg){
   if (msg->type == CONTROL_TYPE) {
-    // TODO: Aqui devemos interpretar
+    handleControlType(msg);
+    // TODO: Vamos ter que aplicar o BellmanFord
   }
 
-  if (msg->type == DATA_TYPE) {
+  else if (msg->type == DATA_TYPE) {
     handleDataType(msg);
-    // TODO: Falta encaminhar para vizinhos caso necessite
+    // TODO: Vamos ter que encaminhar para vizinhos
   }
 }
 

@@ -24,7 +24,7 @@ Router *findRouter(int idx) {
   Router *router = NULL;
   int idy;
 
-  for (idy = 0; idy <= information->connectionsNumber; idy++)
+  for (idy = 0; idy < information->connectionsNumber; idy++)
     if (information->connections[idy].id == idx)
       router = &information->connections[idy];
 
@@ -42,13 +42,13 @@ Router *getRouterInformation() {
   return findRouter(idx);
 }
 
-MessageStructure *createStructure(Router *router, char message[]) {
+MessageStructure *createStructure(Router *router, char message[], int type) {
   MessageStructure *msg = malloc( sizeof(MessageStructure) );
 
   msg->source = *information->current;
   msg->destination = *router;
   strcpy(msg->message, message);
-  msg->type = 0;
+  msg->type = type;
 
   return msg;
 }

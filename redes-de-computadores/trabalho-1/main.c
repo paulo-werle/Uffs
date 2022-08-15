@@ -8,17 +8,20 @@ Information *information;
 List *entryList;
 List *exitList;
 List *receiverList;
+List *controlList;
 
 // Threads
 pthread_t terminalTh;
 pthread_t senderTh;
 pthread_t receiverTh;
 pthread_t packetHandlerTh;
+pthread_t signalTh;
 
 // Mutexes
 pthread_mutex_t entryMt;
 pthread_mutex_t exitMt;
 pthread_mutex_t receiverMt;
+pthread_mutex_t controlMt;
 
 // Semáforos
 sem_t senderSm;
@@ -44,6 +47,7 @@ void createThreads() {
   pthread_create(&senderTh,        NULL, &senderFn,        NULL);
   pthread_create(&receiverTh,      NULL, &receiverFn,      NULL);
   pthread_create(&packetHandlerTh, NULL, &packetHandlerFn, NULL);
+  pthread_create(&signalTh,        NULL, &signalFn,        NULL);
 }
 
 void destroyThreads() {
@@ -51,6 +55,7 @@ void destroyThreads() {
   pthread_join(senderTh,        NULL);
   pthread_join(receiverTh,      NULL);
   pthread_join(packetHandlerTh, NULL);
+  pthread_join(signalTh,        NULL);
 }
 
 int main(int number, char *args[]) {

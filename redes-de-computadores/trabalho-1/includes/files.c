@@ -80,26 +80,29 @@ Router *searchForConnectedRouters(int id, int number, FILE *routerFile, FILE *li
   return connections;
 }
 
-char *searchByDistanceFromRouters(int id, int number, FILE *linksFile) {
-  char *dist = malloc( MESSAGE_SIZE );
-  int indexes[3], size, idx = 0;
+void searchByDistanceFromRouters(int id, char distances[], FILE *linksFile) {
+  int indexes[3], size, idx = 1;
+
+  strcpy(&(distances[0]), "|");
 
   while (getDistanceFromRouter(indexes, linksFile) == 3) {
     if (id == indexes[0]) {
-      size = snprintf(&(dist[idx]), MESSAGE_SIZE, "%d-%d,", indexes[1], indexes[2]);
+      size = snprintf(&(distances[idx]), MESSAGE_SIZE, "%d-%d|", indexes[1], indexes[2]);
       idx += size;
     }
     if (id == indexes[1]) {
-      size = snprintf(&(dist[idx]), MESSAGE_SIZE, "%d-%d,", indexes[0], indexes[2]);
+      size = snprintf(&(distances[idx]), MESSAGE_SIZE, "%d-%d|", indexes[0], indexes[2]);
       idx += size;
     }
   }
 
-  return dist;
+  strcpy(&(distances[idx]), "\0");
 }
 
 // Função para definir informações
 void setInformation(int id) {
+  char distances[MESSAGE_SIZE];
+
   FILE* routerFile = openFile("config/roteador.config");
   FILE* linksFile = openFile("config/enlaces.config");
 
@@ -115,5 +118,6 @@ void setInformation(int id) {
 
   // Informações sobre as distancias
   information->distancesNumber = number;
-  information->distances = searchByDistanceFromRouters(id, number, linksFile);
+  searchByDistanceFromRouters(id, distances, linksFile);
+  strcpy(information->distances, distances);
 }
