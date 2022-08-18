@@ -15,21 +15,15 @@ int menuOptions() {
 }
 
 void scheduleShipping() {
-  char message[MESSAGE_SIZE];
-  Router *router;
+  // Router *router = getDestinationInformation();
+  // char *message = getMessage();
 
-  // Obtem informações de envio
-  router = getRouterInformation();
-  getMessage(message);
+  // Structure *msg = createStructure(router, message, DATA_TYPE);
 
-  // Monta estrutura para envio
-  MessageStructure *msg = createStructure(router, message, DATA_TYPE);
-
-  // Prepara envio
-  pthread_mutex_lock(&exitMt);
-  exitList = insertInTheList(exitList, msg);
-  pthread_mutex_unlock(&exitMt);
-  sem_post(&senderSm);
+  // pthread_mutex_lock(&exitMt);
+  // exitList = insertInTheList(exitList, msg);
+  // pthread_mutex_unlock(&exitMt);
+  // sem_post(&senderSm);
 }
 
 List *showMessages(List *list) {
@@ -37,13 +31,13 @@ List *showMessages(List *list) {
   while (list != NULL) {
     printf(
       "Roteador de origem: Id: %d Endereço: %s:%d \n",
-      list->messageStructure->source.id,
-      list->messageStructure->source.ip,
-      list->messageStructure->source.port
+      list->structure->source.id,
+      list->structure->source.ip,
+      list->structure->source.port
     );
     printf(
       "Mensagem: %s \n",
-      list->messageStructure->message
+      list->structure->message
     );
 
     list = removeFromList(list);

@@ -1,10 +1,10 @@
 #include "../dataStructure.c"
 #include "../importers.h"
 
-List *insertInTheList(List *list, MessageStructure *msg) {
+List *insertInTheList(List *list, Structure *msg) {
   List *auxE, *newE = malloc( sizeof(List) );
 
-  newE->messageStructure = msg;
+  newE->structure = msg;
   newE->next = NULL;
 
   if (list == NULL) {

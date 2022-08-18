@@ -11,6 +11,8 @@
 #include <unistd.h>
 
 #define MESSAGE_SIZE 512
+#define SIGNAL_TIME 30
+#define INFINITE 1000
 
 #define CONTROL_TYPE 1
 #define DATA_TYPE 0
@@ -50,22 +52,33 @@ extern struct sockaddr_in senderAddr;
 extern struct sockaddr_in receiverAddr;
 
 // ----- Functions -----
+// -- bellManFord.c
+int bellManFord(char message[]);
+
 // -- files.c
 void setInformation(int id);
 
 // -- helpers.c
+Structure *generateStructure(Router *router, char message[], int type);
 int executionArguments(int number, char *args[]);
+Router *getDestinationInformation();
 void reportError(char *message);
-void getMessage(char message[]);
-Router *getRouterInformation();
-MessageStructure *createStructure(Router *router, char message[], int type);
+Router *getRouter(int id);
+char *getMessage();
 
 // -- lists.c
 List *removeFromList(List *list);
-List *insertInTheList(List *list, MessageStructure *msg);
+List *insertInTheList(List *list, Structure *msg);
+
+// -- prints.c
+void printStructure(Structure *structure);
+void printInformations();
 
 // -- sockets.c
 void startSocket();
+
+// -- signal.c
+void sendSignal();
 
 // -- threads
 void *receiverFn();

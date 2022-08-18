@@ -44,24 +44,24 @@ void destroySemaphores() {
 
 void createThreads() {
   pthread_create(&terminalTh,      NULL, &terminalFn,      NULL);
-  pthread_create(&senderTh,        NULL, &senderFn,        NULL);
   pthread_create(&receiverTh,      NULL, &receiverFn,      NULL);
   pthread_create(&packetHandlerTh, NULL, &packetHandlerFn, NULL);
+  pthread_create(&senderTh,        NULL, &senderFn,        NULL);
   pthread_create(&signalTh,        NULL, &signalFn,        NULL);
 }
 
 void destroyThreads() {
   pthread_join(terminalTh,      NULL);
-  pthread_join(senderTh,        NULL);
   pthread_join(receiverTh,      NULL);
   pthread_join(packetHandlerTh, NULL);
+  pthread_join(senderTh,        NULL);
   pthread_join(signalTh,        NULL);
 }
 
 int main(int number, char *args[]) {
+  int id = executionArguments(number, args);
 
   // Define informações sobre o roteador
-  int id = executionArguments(number, args);
   setInformation(id);
 
   // Inicia socket

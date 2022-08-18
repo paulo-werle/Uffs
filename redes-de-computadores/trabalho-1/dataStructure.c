@@ -10,32 +10,54 @@ typedef struct _router
 } Router;
 
 // Estrutura para mensagens
-typedef struct _messageStructure
+typedef struct _structure
 {
   int type;
   Router source;
   Router destination;
   char message[MESSAGE_SIZE];
 
-} MessageStructure;
+} Structure;
 
 // Lista
 typedef struct _list
 {
 	struct _list *next;
-  MessageStructure *messageStructure;
+  Structure *structure;
 
 } List;
 
-// Informações do roteador
-typedef struct Information
+// Vetor distancia
+typedef struct _distance
 {
+  int id;
+  int src;
+  int value;
+
+} Distance;
+
+typedef struct _connections
+{
+  int id;
+  int value;
+
+} Connections;
+
+// Informações do roteador
+typedef struct _information
+{
+  int id;
   Router *current;
 
-  Router *connections;
-  int connectionsNumber;
+  int numberOfRouters;
+  Distance *distances;
+  Router *routerData;
 
-  char distances[MESSAGE_SIZE];
-  int distancesNumber;
-
+  int numberOfConnections;
+  Connections *connectedRouters;
 } Information;
+
+// routerDistances[NUMERO DE ROTEADORES][3]
+// routerDistances[0][0] - Roteador
+// routerDistances[0][1] - Src
+// routerDistances[0][2] - Distancia

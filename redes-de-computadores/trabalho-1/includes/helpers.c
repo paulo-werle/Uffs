@@ -1,6 +1,7 @@
 #include "../dataStructure.c"
 #include "../importers.h"
 
+// Função para validação de argumentos
 int executionArguments(int number, char *args[]) {
   if (number != 2 || !strcmp(args[1], "--help")) {
     printf("Usage: %s <router_id> \n", args[0]);
@@ -10,45 +11,53 @@ int executionArguments(int number, char *args[]) {
   return atoi(args[1]);
 }
 
+// Função para reportar erro
 void reportError(char *message) {
   perror(message);
   exit(1);
 }
 
-void getMessage(char message[]) {
+// Função para pegar mensagem
+char *getMessage() {
+  char *message = malloc(sizeof(char) * MESSAGE_SIZE);
+
   printf("Informe a mensagem a ser enviada: ");
   fgets(message, MESSAGE_SIZE, stdin);
+
+  return message;
 }
 
-Router *findRouter(int idx) {
-  Router *router = NULL;
-  int idy;
+// Função para pegar roteador de destino
+Router *getDestinationInformation() {
+  int index;
 
-  for (idy = 0; idy < information->connectionsNumber; idy++)
-    if (information->connections[idy].id == idx)
-      router = &information->connections[idy];
+  printf("Para qual roteador enviaremos a mensagem?: ");
+  scanf("%d%*c", &index);
 
-  if (router == NULL)
-    reportError("findRouter - Roteador não encontrado \n");
+  return getRouter(index);
+}
+
+// Função para buscar roteador
+Router *getRouter(int id) {
+  Router *router = malloc(sizeof(Router));
+  int index;
+
+  for (index = 0; index < information->numberOfRouters; index++)
+    if (information->routerData[index].id == id) break;
+
+  *router = information->routerData[index];
 
   return router;
 }
 
-Router *getRouterInformation() {
-  int idx;
-  printf("Para qual roteador enviaremos a mensagem?: ");
-  scanf("%d%*c", &idx);
+// Função para preparar estrutura da mensagem
+Structure *generateStructure(Router *router, char message[], int type) {
+  Structure *structure = malloc(sizeof(Structure));
 
-  return findRouter(idx);
-}
+  structure->source      = *information->current;
+  structure->destination = *router;
+  structure->type        = type;
+  strcpy(structure->message, message);
 
-MessageStructure *createStructure(Router *router, char message[], int type) {
-  MessageStructure *msg = malloc( sizeof(MessageStructure) );
-
-  msg->source = *information->current;
-  msg->destination = *router;
-  strcpy(msg->message, message);
-  msg->type = type;
-
-  return msg;
+  return structure;
 }

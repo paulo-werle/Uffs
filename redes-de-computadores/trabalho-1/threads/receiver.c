@@ -1,32 +1,30 @@
 #include "../dataStructure.c"
 #include "../importers.h"
 
-MessageStructure *receiverMessage() {
-  int lenSocket = sizeof(receiverAddr);
-  MessageStructure *msg = malloc( sizeof(MessageStructure) );
-  int code;
+Structure *receiverMessage() {
+  Structure *structure = malloc(sizeof(Structure));
+  int code, lenSocket = sizeof(receiverAddr);
 
   code = recvfrom(
-    sSocket, msg, sizeof(MessageStructure), 0,
+    sSocket, structure, sizeof(Structure), 0,
     (struct sockaddr *) &receiverAddr, &lenSocket
   );
 
   if (code == ERROR_CODE)
     reportError("sendMessage - Erro ao enviar mensagem \n");
 
-  return msg;
+  return structure;
 }
 
 void *receiverFn() {
-  MessageStructure *msg;
+  Structure *structure;
 
   while(true) {
-    // Recebe mensagem
-    msg = receiverMessage();
+    structure = receiverMessage();
 
-    // Inserindo na lista de entrada
+    // printStructure(structure);
     pthread_mutex_lock(&entryMt);
-    entryList = insertInTheList(entryList, msg);
+    entryList = insertInTheList(entryList, structure);
     pthread_mutex_unlock(&entryMt);
     sem_post(&packetHandlerSm);
   }

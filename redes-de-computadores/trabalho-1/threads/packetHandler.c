@@ -1,26 +1,31 @@
 #include "../dataStructure.c"
 #include "../importers.h"
 
-void handleDataType(MessageStructure *msg) {
+void handleDataType(Structure *structure) {
   pthread_mutex_lock(&receiverMt);
-  receiverList = insertInTheList(receiverList, msg);
+  receiverList = insertInTheList(receiverList, structure);
   pthread_mutex_unlock(&receiverMt);
 }
 
-void handleControlType(MessageStructure *msg) {
+void handleControlType(Structure *structure) {
   pthread_mutex_lock(&controlMt);
-  controlList = insertInTheList(controlList, msg);
+  controlList = insertInTheList(controlList, structure);
   pthread_mutex_unlock(&controlMt);
 }
 
-void sortPackageType(MessageStructure *msg){
-  if (msg->type == CONTROL_TYPE) {
-    handleControlType(msg);
-    // TODO: Vamos ter que aplicar o BellmanFord
+void manageBellManFord(Structure *structure) {
+  int changes = bellManFord(structure->message);
+  if (changes) sendSignal();
+}
+
+void sortPackageType(Structure *structure){
+  if (structure->type == CONTROL_TYPE) {
+    handleControlType(structure);
+    manageBellManFord(structure);
   }
 
-  else if (msg->type == DATA_TYPE) {
-    handleDataType(msg);
+  if (structure->type == DATA_TYPE) {
+    handleDataType(structure);
     // TODO: Vamos ter que encaminhar para vizinhos
   }
 }
@@ -28,7 +33,7 @@ void sortPackageType(MessageStructure *msg){
 void *packetHandlerFn() {
   while(true) {
     sem_wait(&packetHandlerSm);
-    sortPackageType(entryList->messageStructure);
+    sortPackageType(entryList->structure);
 
     pthread_mutex_lock(&entryMt);
     entryList = removeFromList(entryList);

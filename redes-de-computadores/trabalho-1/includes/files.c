@@ -11,113 +11,126 @@ FILE *openFile(char path[]) {
   return file;
 }
 
-// Função para pegar dados do roteador
-int getDataFromRouter(Router *router, FILE *routerFile) {
-  return fscanf( routerFile,
-    "%d %d %s", &router->id, &router->port, router->ip
+// Função para pegar dados do router
+int matchRouter(Router *router, FILE *file) {
+  return fscanf(
+    file,
+    "%d %d %s",
+    &router->id,
+    &router->port,
+    router->ip
   );
 }
 
-// Função para pegar conexão do roteador
-int getConnectionFromRouter(int ids[], FILE *linksFile) {
-  return fscanf( linksFile,
-    "%d %d %*d", &ids[0], &ids[1]
+// Função para pegar dados da conexão
+int matchConnection(int values[], FILE *file) {
+  return fscanf(
+    file,
+    "%d %d %d",
+    &values[0],
+    &values[1],
+    &values[2]
   );
 }
 
-// Função para pegar conexão do roteador
-int getDistanceFromRouter(int ids[], FILE *linksFile) {
-  return fscanf( linksFile,
-    "%d %d %d", &ids[0], &ids[1], &ids[2]
-  );
-}
+// Função para encontrar roteador
+Router *fetchRouter(int id, FILE *file) {
+  Router *router = malloc(sizeof(Router));
 
-// Função para encontrar roteador no arquivo
-Router *findRouterInFile(int id, FILE *routerFile) {
-  Router *router = malloc( sizeof(Router) );
+  while (matchRouter(router, file) == 3)
+    if (id == router->id) break;
 
-  while ( getDataFromRouter(router, routerFile) == 3 )
-    if (router->id == id) break;
-
-  fseek(routerFile, 0, SEEK_SET);
-
-  if (router->id != id)
-    reportError("findRouterInFile - Roteador inexistente");
-
+  fseek(file, 0, SEEK_SET);
   return router;
 }
 
-// Função para contar numero de roteadores conectados
-int countNumberOfConnectedRouters(int id, FILE *linksFile) {
-  int ids[2], number = 0;
+// Função para contar roteadores
+int fetchNumberOfRouter(FILE *file) {
+  Router *router = malloc(sizeof(Router));
+  int number = 0;
 
-  while ( getConnectionFromRouter(ids, linksFile) == 2 )
-    if (ids[0] == id || ids[1] == id) number++;
+  while (matchRouter(router, file) == 3)
+    if (information->id != router->id) number++;
 
-  fseek(linksFile, 0, SEEK_SET);
+  fseek(file, 0, SEEK_SET);
+  return number;
+}
+
+int fetchNumberOfConnections(FILE *file) {
+  int values[3], number = 0;
+
+  while (matchConnection(values, file) == 3)
+    if (information->id == values[0] || information->id == values[1]) number++;
+
+  fseek(file, 0, SEEK_SET);
   return number;
 }
 
 // Função para buscar roteadores conectados
-Router *searchForConnectedRouters(int id, int number, FILE *routerFile, FILE *linksFile) {
-  Router *connections = malloc( sizeof(Router) * number);
-  int idx = 0, ids[2];
+Router *fetchRouterData(FILE *file) {
+  Router *routers = malloc(sizeof(Router) * information->numberOfRouters);
+  Router *router = malloc(sizeof(Router));
+  int index = 0;
 
-  while ( getConnectionFromRouter(ids, linksFile) == 2 ) {
-    if (id == ids[0]) {
-      connections[idx] = *findRouterInFile(ids[1], routerFile);
-      idx++;
+  while (matchRouter(router, file) == 3)
+    if (information->id != router->id)
+      routers[index++] = *router;
 
+  fseek(file, 0, SEEK_SET);
+  return routers;
+}
+
+Connections *fetchConnectedRouters(FILE *file) {
+  Connections *connections = malloc(sizeof(Connections) * information->numberOfConnections);
+  int values[3], index = 0;
+
+  while (matchConnection(values, file) == 3) {
+    if (information->id == values[0]) {
+      connections[index].id    = values[1];
+      connections[index].value = values[2];
+      index++;
     }
-    if (id == ids[1]) {
-      connections[idx] = *findRouterInFile(ids[0], routerFile);
-      idx++;
 
+    if (information->id == values[1]) {
+      connections[index].id    = values[0];
+      connections[index].value = values[2];
+      index++;
     }
   }
 
-  fseek(linksFile, 0, SEEK_SET);
+  fseek(file, 0, SEEK_SET);
   return connections;
 }
 
-void searchByDistanceFromRouters(int id, char distances[], FILE *linksFile) {
-  int indexes[3], size, idx = 1;
+Distance *fetchRouterDistances() {
+  Distance *distances = malloc(sizeof(Distance) * information->numberOfRouters);
+  int index = 0;
 
-  strcpy(&(distances[0]), "|");
+  distances[index].id    = information->id;
+  distances[index].src   = information->id;
+  distances[index].value = 0;
 
-  while (getDistanceFromRouter(indexes, linksFile) == 3) {
-    if (id == indexes[0]) {
-      size = snprintf(&(distances[idx]), MESSAGE_SIZE, "%d-%d|", indexes[1], indexes[2]);
-      idx += size;
-    }
-    if (id == indexes[1]) {
-      size = snprintf(&(distances[idx]), MESSAGE_SIZE, "%d-%d|", indexes[0], indexes[2]);
-      idx += size;
-    }
+  for (index = 0; index < information->numberOfRouters; index++) {
+    distances[index + 1].id    = information->routerData[index].id;
+    distances[index + 1].src   = information->id;
+    distances[index + 1].value = INFINITE;
   }
 
-  strcpy(&(distances[idx]), "\0");
+  return distances;
 }
 
 // Função para definir informações
 void setInformation(int id) {
-  char distances[MESSAGE_SIZE];
+  FILE* lFile = openFile("config/enlaces.config");
+  FILE* rFile = openFile("config/roteador.config");
 
-  FILE* routerFile = openFile("config/roteador.config");
-  FILE* linksFile = openFile("config/enlaces.config");
-
-  int number = countNumberOfConnectedRouters(id, linksFile);
-
-  // Informações sobre o roteador
-  information = malloc( sizeof(Information) );
-  information->current = findRouterInFile(id, routerFile);
-
-  // Informações sobre as conexões
-  information->connectionsNumber = number;
-  information->connections = searchForConnectedRouters(id, number, routerFile, linksFile);
-
-  // Informações sobre as distancias
-  information->distancesNumber = number;
-  searchByDistanceFromRouters(id, distances, linksFile);
-  strcpy(information->distances, distances);
+  information                      = malloc(sizeof(Information));
+  information->id                  = id;
+  information->current             = fetchRouter(id, rFile);
+  information->numberOfRouters     = fetchNumberOfRouter(rFile);
+  information->routerData          = fetchRouterData(rFile);
+  information->numberOfConnections = fetchNumberOfConnections(lFile);
+  information->connectedRouters    = fetchConnectedRouters(lFile);
+  information->distances           = fetchRouterDistances();
+  // printInformations();
 }
