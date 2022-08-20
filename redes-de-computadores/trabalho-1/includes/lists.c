@@ -2,7 +2,7 @@
 #include "../importers.h"
 
 List *insertInTheList(List *list, Structure *msg) {
-  List *auxE, *newE = malloc( sizeof(List) );
+  List *auxE, *newE = malloc(sizeof(List));
 
   newE->structure = msg;
   newE->next = NULL;

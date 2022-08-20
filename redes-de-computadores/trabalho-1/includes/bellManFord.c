@@ -2,7 +2,7 @@
 #include "../importers.h"
 
 Distance *handleMessage(char message[]) {
-  Distance *distances = malloc(sizeof(Distance) * information->numberOfRouters);
+  Distance *distances = malloc(sizeof(Distance) * (information->numberOfRouters + 1));
   char values[MESSAGE_SIZE];
   int index, size = 0;
 
@@ -22,11 +22,15 @@ Distance *handleMessage(char message[]) {
 }
 
 int getWeight(int id) {
-  int index;
+  int index, value;
 
   for (index = 0; index < information->numberOfConnections; index++)
-    if (id == information->connectedRouters[index].id)
-      return information->connectedRouters[index].value;
+    if (id == information->connectedRouters[index].id) {
+      value = information->connectedRouters[index].value;
+      break;
+    }
+
+  return value;
 }
 
 int handleBellManFord(Distance *distances, int weight) {

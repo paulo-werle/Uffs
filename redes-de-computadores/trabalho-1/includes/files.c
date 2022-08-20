@@ -103,7 +103,7 @@ Connections *fetchConnectedRouters(FILE *file) {
 }
 
 Distance *fetchRouterDistances() {
-  Distance *distances = malloc(sizeof(Distance) * information->numberOfRouters);
+  Distance *distances = malloc(sizeof(Distance) * (information->numberOfRouters + 1));
   int index = 0;
 
   distances[index].id    = information->id;

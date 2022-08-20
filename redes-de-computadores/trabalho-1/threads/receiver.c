@@ -3,7 +3,8 @@
 
 Structure *receiverMessage() {
   Structure *structure = malloc(sizeof(Structure));
-  int code, lenSocket = sizeof(receiverAddr);
+  unsigned int lenSocket = sizeof(receiverAddr);
+  int code;
 
   code = recvfrom(
     sSocket, structure, sizeof(Structure), 0,

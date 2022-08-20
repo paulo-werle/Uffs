@@ -19,7 +19,7 @@ void reportError(char *message) {
 
 // Função para pegar mensagem
 char *getMessage() {
-  char *message = malloc(sizeof(char) * MESSAGE_SIZE);
+  char *message = malloc(MESSAGE_SIZE);
 
   printf("Informe a mensagem a ser enviada: ");
   fgets(message, MESSAGE_SIZE, stdin);
