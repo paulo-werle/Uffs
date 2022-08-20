@@ -19,7 +19,9 @@ void sendSignal() {
   char message[MESSAGE_SIZE];
   int index;
 
+  pthread_mutex_lock(&distanceMt);
   handleDistances(message);
+  pthread_mutex_unlock(&distanceMt);
 
   for (index = 0; index < information->numberOfConnections; index++) {
     Structure *structure = generateStructure(
@@ -28,7 +30,6 @@ void sendSignal() {
       CONTROL_TYPE
     );
 
-    // printStructure(structure);
     pthread_mutex_lock(&exitMt);
     exitList = insertInTheList(exitList, structure);
     pthread_mutex_unlock(&exitMt);
@@ -36,8 +37,24 @@ void sendSignal() {
   }
 }
 
+void checkConnection() {
+  time_t checkTime = time(NULL);
+  int index;
+
+  for (index = 0; index <= information->numberOfRouters; index++) {
+    if (
+      information->distances[index].time &&
+      (checkTime - information->distances[index].time) >= DISCONECT_TIME
+    ) {
+      information->distances[index].time = 0;
+      information->distances[index].value = INFINITE;
+    }
+  }
+}
+
 void *signalFn() {
   while (true) {
+    checkConnection();
     sendSignal();
     sleep(SIGNAL_TIME);
   }

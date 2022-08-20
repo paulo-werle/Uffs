@@ -1,3 +1,5 @@
+#include <time.h>
+
 #define MESSAGE_SIZE 512
 
 // Roteador
@@ -33,6 +35,7 @@ typedef struct _distance
   int id;
   int src;
   int value;
+  time_t time;
 
 } Distance;
 

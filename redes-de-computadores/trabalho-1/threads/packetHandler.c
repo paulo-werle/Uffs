@@ -30,9 +30,20 @@ void sortPackageType(Structure *structure){
   }
 }
 
+void updateTime(Structure *structure) {
+  int index;
+
+  for (index = 0; index <= information->numberOfRouters; index++)
+    if (structure->source.id == information->distances[index].id) {
+      time(&information->distances[index].time);
+      break;
+    }
+}
+
 void *packetHandlerFn() {
   while(true) {
     sem_wait(&packetHandlerSm);
+    updateTime(entryList->structure);
     sortPackageType(entryList->structure);
 
     pthread_mutex_lock(&entryMt);

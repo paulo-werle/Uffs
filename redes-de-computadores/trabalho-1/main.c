@@ -22,6 +22,7 @@ pthread_mutex_t entryMt;
 pthread_mutex_t exitMt;
 pthread_mutex_t receiverMt;
 pthread_mutex_t controlMt;
+pthread_mutex_t distanceMt;
 
 // Semáforos
 sem_t senderSm;

@@ -8,11 +8,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <time.h>
 #include <unistd.h>
 
 #define MESSAGE_SIZE 512
-#define SIGNAL_TIME 30
 #define INFINITE 1000
+
+#define DISCONECT_TIME 10
+#define SIGNAL_TIME 5
 
 #define CONTROL_TYPE 1
 #define DATA_TYPE 0
@@ -41,6 +44,7 @@ extern pthread_mutex_t entryMt;
 extern pthread_mutex_t exitMt;
 extern pthread_mutex_t receiverMt;
 extern pthread_mutex_t controlMt;
+extern pthread_mutex_t distanceMt;
 
 // -- Semáforos
 extern sem_t senderSm;

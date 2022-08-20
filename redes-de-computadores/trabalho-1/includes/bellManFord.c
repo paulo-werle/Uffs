@@ -59,7 +59,10 @@ int bellManFord(char message[]) {
 
   distances = handleMessage(message);
   weight = getWeight(distances[0].id);
+
+  pthread_mutex_lock(&distanceMt);
   changes = handleBellManFord(distances, weight);
+  pthread_mutex_unlock(&distanceMt);
 
   return changes;
 }

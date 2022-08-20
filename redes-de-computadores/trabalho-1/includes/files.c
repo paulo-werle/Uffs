@@ -109,11 +109,13 @@ Distance *fetchRouterDistances() {
   distances[index].id    = information->id;
   distances[index].src   = information->id;
   distances[index].value = 0;
+  distances[index].time  = 0;
 
   for (index = 0; index < information->numberOfRouters; index++) {
     distances[index + 1].id    = information->routerData[index].id;
     distances[index + 1].src   = information->id;
     distances[index + 1].value = INFINITE;
+    distances[index + 1].time  = 0;
   }
 
   return distances;
