@@ -16,15 +16,18 @@ int menuOptions() {
 }
 
 void scheduleShipping() {
-  // Router *router = getDestinationInformation();
-  // char *message = getMessage();
+  Structure *structure;
+  Router *router;
+  char *message;
 
-  // Structure *msg = createStructure(router, message, DATA_TYPE);
+  router = getDestinationInformation();
+  message = getMessage();
+  structure= generateStructure(router, message, DATA_TYPE);
 
-  // pthread_mutex_lock(&exitMt);
-  // exitList = insertInTheList(exitList, msg);
-  // pthread_mutex_unlock(&exitMt);
-  // sem_post(&senderSm);
+  pthread_mutex_lock(&exitMt);
+  exitList = insertInTheList(exitList, structure);
+  pthread_mutex_unlock(&exitMt);
+  sem_post(&senderSm);
 }
 
 List *showMessages(List *list) {
@@ -37,7 +40,13 @@ List *showMessages(List *list) {
       list->structure->source.port
     );
     printf(
-      "Mensagem: %s \n",
+      "Roteador de destino: Id: %d Endereço: %s:%d \n",
+      list->structure->destination.id,
+      list->structure->destination.ip,
+      list->structure->destination.port
+    );
+    printf(
+      "Mensagem: %s \n\n",
       list->structure->message
     );
 

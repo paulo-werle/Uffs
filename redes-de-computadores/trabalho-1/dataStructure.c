@@ -1,6 +1,6 @@
 #include <time.h>
 
-#define MESSAGE_SIZE 512
+#define MESSAGE_SIZE 100
 
 // Roteador
 typedef struct _router

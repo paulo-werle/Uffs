@@ -50,6 +50,15 @@ Router *getRouter(int id) {
   return router;
 }
 
+Router *getRouterDistance(int id) {
+  int index;
+
+  for (index = 0; index < information->numberOfRouters; index++)
+    if (information->distances[index].id == id) break;
+
+  return getRouter(information->distances[index].src);
+}
+
 // Função para preparar estrutura da mensagem
 Structure *generateStructure(Router *router, char message[], int type) {
   Structure *structure = malloc(sizeof(Structure));

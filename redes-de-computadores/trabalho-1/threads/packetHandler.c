@@ -18,6 +18,15 @@ void manageBellManFord(Structure *structure) {
   if (changes) sendSignal();
 }
 
+void forwardMessage(Structure *structure) {
+  if (structure->destination.id == information->id) return;
+
+  pthread_mutex_lock(&exitMt);
+  exitList = insertInTheList(exitList, structure);
+  pthread_mutex_unlock(&exitMt);
+  sem_post(&senderSm);
+}
+
 void sortPackageType(Structure *structure){
   if (structure->type == CONTROL_TYPE) {
     handleControlType(structure);
@@ -26,7 +35,7 @@ void sortPackageType(Structure *structure){
 
   if (structure->type == DATA_TYPE) {
     handleDataType(structure);
-    // TODO: Vamos ter que encaminhar para vizinhos
+    forwardMessage(structure);
   }
 }
 

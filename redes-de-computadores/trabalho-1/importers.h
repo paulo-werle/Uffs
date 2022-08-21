@@ -11,11 +11,11 @@
 #include <time.h>
 #include <unistd.h>
 
-#define MESSAGE_SIZE 512
-#define INFINITE 1000
+#define MESSAGE_SIZE 100
+#define INFINITE 26
 
-#define DISCONECT_TIME 10
-#define SIGNAL_TIME 5
+#define DISCONECT_TIME 45
+#define SIGNAL_TIME 15
 
 #define CONTROL_TYPE 1
 #define DATA_TYPE 0
@@ -66,13 +66,14 @@ void setInformation(int id);
 Structure *generateStructure(Router *router, char message[], int type);
 int executionArguments(int number, char *args[]);
 Router *getDestinationInformation();
+Router *getRouterDistance(int id);
 void reportError(char *message);
 Router *getRouter(int id);
 char *getMessage();
 
 // -- lists.c
 List *removeFromList(List *list);
-List *insertInTheList(List *list, Structure *msg);
+List *insertInTheList(List *list, Structure *structure);
 
 // -- prints.c
 void printStructure(Structure *structure);
