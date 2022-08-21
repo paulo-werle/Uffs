@@ -1,6 +1,6 @@
-#include "../dataStructure.c"
 #include "../importers.h"
 
+// Função para ações no menu
 int menuOptions() {
   int option;
 
@@ -15,21 +15,25 @@ int menuOptions() {
   return option;
 }
 
+// Função para agendar envio de pacote de dados
 void scheduleShipping() {
   Structure *structure;
   Router *router;
   char *message;
 
+  // Monta estrutura com informações
   router = getDestinationInformation();
   message = getMessage();
   structure= generateStructure(router, message, DATA_TYPE);
 
+  // Coloca estrutura na fila de saida
   pthread_mutex_lock(&exitMt);
   exitList = insertInTheList(exitList, structure);
   pthread_mutex_unlock(&exitMt);
   sem_post(&senderSm);
 }
 
+// Função para exibir pacotes
 List *showMessages(List *list) {
   printf("----------> Mensagens recebidas <----------\n");
   while (list != NULL) {
@@ -57,18 +61,21 @@ List *showMessages(List *list) {
   return list;
 }
 
+// Função para gerenciar exibição dos pacotes de dados recebidos
 void showDataReceived() {
   pthread_mutex_lock(&receiverMt);
   receiverList = showMessages(receiverList);
   pthread_mutex_unlock(&receiverMt);
 }
 
+// Função para gerenciar exibição dos pacotes de controle recebidos
 void showControlReceived() {
   pthread_mutex_lock(&controlMt);
   controlList = showMessages(controlList);
   pthread_mutex_unlock(&controlMt);
 }
 
+// Função para exibir vetor distancia
 void showDistances() {
   int index;
 
@@ -87,27 +94,33 @@ void showDistances() {
   pthread_mutex_unlock(&distanceMt);
 }
 
+// Função para gerenciar terminal
 void *terminalFn() {
   while (true) {
     int option = menuOptions();
 
     switch(option) {
+      // Agendar envio de pacote
       case 1 :
         scheduleShipping();
         break;
 
+      // Exibir pacote de dados recebidos
       case 2 :
         showDataReceived();
         break;
 
+      // Exibir pacote de controle recebidos
       case 3 :
         showControlReceived();
         break;
 
+      // Exibir vetor distancia
       case 4 :
         showDistances();
         break;
 
+      // Encerrar programa
       case 0 :
         exit(0);
         break;

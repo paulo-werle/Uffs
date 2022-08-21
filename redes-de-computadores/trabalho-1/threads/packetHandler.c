@@ -1,23 +1,26 @@
-#include "../dataStructure.c"
 #include "../importers.h"
 
+// Função para inserir na fila de pacotes de dados
 void handleDataType(Structure *structure) {
   pthread_mutex_lock(&receiverMt);
   receiverList = insertInTheList(receiverList, structure);
   pthread_mutex_unlock(&receiverMt);
 }
 
+// Função para inserir na fila de pacotes de controle
 void handleControlType(Structure *structure) {
   pthread_mutex_lock(&controlMt);
   controlList = insertInTheList(controlList, structure);
   pthread_mutex_unlock(&controlMt);
 }
 
+// Função para gerenciar Bellman Ford
 void manageBellManFord(Structure *structure) {
   int changes = bellManFord(structure->message);
   if (changes) sendSignal();
 }
 
+// Função para encaminhar pacote caso necessario
 void forwardMessage(Structure *structure) {
   if (structure->destination.id == information->id) return;
 
@@ -27,6 +30,7 @@ void forwardMessage(Structure *structure) {
   sem_post(&senderSm);
 }
 
+// Função para gerenciar pacote de acordo com o seu tipo
 void sortPackageType(Structure *structure){
   if (structure->type == CONTROL_TYPE) {
     handleControlType(structure);
@@ -39,6 +43,7 @@ void sortPackageType(Structure *structure){
   }
 }
 
+// Função para atualizar o tempo do vetor distancia
 void updateTime(Structure *structure) {
   int index;
 
@@ -49,6 +54,7 @@ void updateTime(Structure *structure) {
     }
 }
 
+// Função para gerenciamento de pacotes
 void *packetHandlerFn() {
   while(true) {
     sem_wait(&packetHandlerSm);

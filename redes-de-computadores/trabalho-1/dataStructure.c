@@ -1,8 +1,4 @@
-#include <time.h>
-
-#define MESSAGE_SIZE 100
-
-// Roteador
+// Estrutura para informações do roteador
 typedef struct _router
 {
   int id;
@@ -11,7 +7,7 @@ typedef struct _router
 
 } Router;
 
-// Estrutura para mensagens
+// Estrutura para informações da mensagem
 typedef struct _structure
 {
   int type;
@@ -21,7 +17,7 @@ typedef struct _structure
 
 } Structure;
 
-// Lista
+// Estrutura para Listas
 typedef struct _list
 {
 	struct _list *next;
@@ -29,7 +25,7 @@ typedef struct _list
 
 } List;
 
-// Vetor distancia
+// Estrutura para informações do vetor distancia
 typedef struct _distance
 {
   int id;
@@ -39,6 +35,7 @@ typedef struct _distance
 
 } Distance;
 
+// Estrutura para informações de conexões
 typedef struct _connections
 {
   int id;
@@ -46,7 +43,7 @@ typedef struct _connections
 
 } Connections;
 
-// Informações do roteador
+// Estrutura para informações do roteador atual
 typedef struct _information
 {
   int id;
@@ -59,8 +56,3 @@ typedef struct _information
   int numberOfConnections;
   Connections *connectedRouters;
 } Information;
-
-// routerDistances[NUMERO DE ROTEADORES][3]
-// routerDistances[0][0] - Roteador
-// routerDistances[0][1] - Src
-// routerDistances[0][2] - Distancia

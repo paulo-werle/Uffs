@@ -1,7 +1,6 @@
-#include "../dataStructure.c"
 #include "../importers.h"
 
-// Função para validação de argumentos
+// Função para verificar argumentos
 int executionArguments(int number, char *args[]) {
   if (number != 2 || !strcmp(args[1], "--help")) {
     printf("Usage: %s <router_id> \n", args[0]);
@@ -11,7 +10,7 @@ int executionArguments(int number, char *args[]) {
   return atoi(args[1]);
 }
 
-// Função para reportar erro
+// Função para reportar erros
 void reportError(char *message) {
   perror(message);
   exit(1);
@@ -27,7 +26,7 @@ char *getMessage() {
   return message;
 }
 
-// Função para pegar roteador de destino
+// Função para pegar informações de destino
 Router *getDestinationInformation() {
   int index;
 
@@ -50,6 +49,7 @@ Router *getRouter(int id) {
   return router;
 }
 
+// Função para buscar roteador apartir do vetor distancia
 Router *getRouterDistance(int id) {
   int index;
 
@@ -59,7 +59,7 @@ Router *getRouterDistance(int id) {
   return getRouter(information->distances[index].src);
 }
 
-// Função para preparar estrutura da mensagem
+// Função para gerar pacote
 Structure *generateStructure(Router *router, char message[], int type) {
   Structure *structure = malloc(sizeof(Structure));
 

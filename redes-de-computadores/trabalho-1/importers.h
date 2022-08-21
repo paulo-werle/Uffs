@@ -11,16 +11,26 @@
 #include <time.h>
 #include <unistd.h>
 
+// ----- Configurações -----
+// Define o tamanho da mensagem
 #define MESSAGE_SIZE 100
-#define INFINITE 26
 
+// Define o valor do infinito
+#define INFINITE 100
+
+// Define tempos de conexão
 #define DISCONECT_TIME 45
 #define SIGNAL_TIME 15
 
+// Define tipos de mensagens
 #define CONTROL_TYPE 1
 #define DATA_TYPE 0
 
+// Define valor de erro
 #define ERROR_CODE -1
+
+// Inclui arquivo com estruturas
+#include "./dataStructure.c"
 
 // ----- Variables -----
 // -- Informações do roteador
@@ -57,32 +67,48 @@ extern struct sockaddr_in receiverAddr;
 
 // ----- Functions -----
 // -- bellManFord.c
+// Função para gerenciar BellMan Ford
 int bellManFord(char message[]);
 
 // -- files.c
+// Função para definir informações do roteador
 void setInformation(int id);
 
 // -- helpers.c
+// Função para gerar pacote
 Structure *generateStructure(Router *router, char message[], int type);
+
+// Função para verificar argumentos
 int executionArguments(int number, char *args[]);
+
+// Função para pegar informações de destino
 Router *getDestinationInformation();
+
+// Função para buscar roteador apartir do vetor distancia
 Router *getRouterDistance(int id);
+
+// Função para reportar erros
 void reportError(char *message);
+
+// Função para buscar roteador
 Router *getRouter(int id);
+
+// Função para pegar mensagem de dados
 char *getMessage();
 
 // -- lists.c
+// Função para remover item da lista
 List *removeFromList(List *list);
+
+// Função para inserir itens na lista
 List *insertInTheList(List *list, Structure *structure);
 
-// -- prints.c
-void printStructure(Structure *structure);
-void printInformations();
-
 // -- sockets.c
+// Função para iniciar sockets
 void startSocket();
 
 // -- signal.c
+// Função para mandar vetor distancia
 void sendSignal();
 
 // -- threads

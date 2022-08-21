@@ -1,6 +1,6 @@
-#include "../dataStructure.c"
 #include "../importers.h"
 
+// Função para inserir itens na lista
 List *insertInTheList(List *list, Structure *structure) {
   List *auxE, *newE = malloc(sizeof(List));
 
@@ -22,6 +22,7 @@ List *insertInTheList(List *list, Structure *structure) {
   return list;
 }
 
+// Função para remover item da lista
 List *removeFromList(List *list) {
   List *auxE = list->next;
 

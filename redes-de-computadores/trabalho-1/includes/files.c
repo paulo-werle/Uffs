@@ -1,4 +1,3 @@
-#include "../dataStructure.c"
 #include "../importers.h"
 
 // Função para abrir arquivos
@@ -56,6 +55,7 @@ int fetchNumberOfRouter(FILE *file) {
   return number;
 }
 
+// Função para contar conexões
 int fetchNumberOfConnections(FILE *file) {
   int values[3], number = 0;
 
@@ -66,7 +66,7 @@ int fetchNumberOfConnections(FILE *file) {
   return number;
 }
 
-// Função para buscar roteadores conectados
+// Função para buscar roteadores
 Router *fetchRouterData(FILE *file) {
   Router *routers = malloc(sizeof(Router) * information->numberOfRouters);
   Router *router = malloc(sizeof(Router));
@@ -80,6 +80,7 @@ Router *fetchRouterData(FILE *file) {
   return routers;
 }
 
+// Função para buscar roteadores conectados
 Connections *fetchConnectedRouters(FILE *file) {
   Connections *connections = malloc(sizeof(Connections) * information->numberOfConnections);
   int values[3], index = 0;
@@ -102,6 +103,7 @@ Connections *fetchConnectedRouters(FILE *file) {
   return connections;
 }
 
+// Função para iniciar vetor distancia
 Distance *fetchRouterDistances() {
   Distance *distances = malloc(sizeof(Distance) * (information->numberOfRouters + 1));
   int index = 0;
@@ -121,7 +123,7 @@ Distance *fetchRouterDistances() {
   return distances;
 }
 
-// Função para definir informações
+// Função para definir informações do roteador
 void setInformation(int id) {
   FILE* lFile = openFile("config/enlaces.config");
   FILE* rFile = openFile("config/roteador.config");
@@ -134,5 +136,4 @@ void setInformation(int id) {
   information->numberOfConnections = fetchNumberOfConnections(lFile);
   information->connectedRouters    = fetchConnectedRouters(lFile);
   information->distances           = fetchRouterDistances();
-  // printInformations();
 }

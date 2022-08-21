@@ -1,6 +1,6 @@
-#include "../dataStructure.c"
 #include "../importers.h"
 
+// Função para montar distancias
 void handleDistances(char message[]) {
   int index, size = 0;
 
@@ -15,14 +15,17 @@ void handleDistances(char message[]) {
     );
 }
 
+// Função para enviar vetor distancia
 void sendSignal() {
   char message[MESSAGE_SIZE];
   int index;
 
+  // Manipula distancias colocando-as em uma string para envio
   pthread_mutex_lock(&distanceMt);
   handleDistances(message);
   pthread_mutex_unlock(&distanceMt);
 
+  // Envia distancias para todos os vizinhos
   for (index = 0; index < information->numberOfConnections; index++) {
     Structure *structure = generateStructure(
       getRouter(information->connectedRouters[index].id),
@@ -30,6 +33,7 @@ void sendSignal() {
       CONTROL_TYPE
     );
 
+    // Coloca estrutura com distancia na fila de saida
     pthread_mutex_lock(&exitMt);
     exitList = insertInTheList(exitList, structure);
     pthread_mutex_unlock(&exitMt);
@@ -37,6 +41,7 @@ void sendSignal() {
   }
 }
 
+// Função para verificar se conexão está ativa
 void checkConnection() {
   time_t checkTime = time(NULL);
   int index;
@@ -52,6 +57,7 @@ void checkConnection() {
   }
 }
 
+// Função para gerenciar envio do vetor distancia
 void *signalFn() {
   while (true) {
     checkConnection();

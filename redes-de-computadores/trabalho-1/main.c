@@ -1,4 +1,3 @@
-#include "dataStructure.c"
 #include "importers.h"
 
 // Informações do roteador
@@ -33,16 +32,19 @@ int sSocket;
 struct sockaddr_in senderAddr;
 struct sockaddr_in receiverAddr;
 
+// Função para criar semáforos
 void createSemaphores() {
   sem_init(&senderSm,        0, 0);
   sem_init(&packetHandlerSm, 0, 0);
 }
 
+// Função para destruir semáforos
 void destroySemaphores() {
   sem_destroy(&senderSm);
   sem_destroy(&packetHandlerSm);
 }
 
+// Função para criar threads
 void createThreads() {
   pthread_create(&terminalTh,      NULL, &terminalFn,      NULL);
   pthread_create(&receiverTh,      NULL, &receiverFn,      NULL);
@@ -51,6 +53,7 @@ void createThreads() {
   pthread_create(&signalTh,        NULL, &signalFn,        NULL);
 }
 
+// Função para destruir threads
 void destroyThreads() {
   pthread_join(terminalTh,      NULL);
   pthread_join(receiverTh,      NULL);
@@ -60,6 +63,7 @@ void destroyThreads() {
 }
 
 int main(int number, char *args[]) {
+  // Verefica argumento de inicialização
   int id = executionArguments(number, args);
 
   // Define informações sobre o roteador
@@ -68,7 +72,7 @@ int main(int number, char *args[]) {
   // Inicia socket
   startSocket();
 
-  // Manipula threads e semáforo
+  // Manipula threads e semáforos
   createSemaphores();
   createThreads();
   destroyThreads();

@@ -1,11 +1,12 @@
-#include "../dataStructure.c"
 #include "../importers.h"
 
+// Função para preparar socket de envio
 void prepareSocketToSend() {
   memset((char *) &senderAddr, 0, sizeof(senderAddr));
   senderAddr.sin_family = AF_INET;
 }
 
+// Função para preparar socket de recebimento
 void prepareSocketToReceiver() {
   int bindCode;
 
@@ -20,6 +21,7 @@ void prepareSocketToReceiver() {
     reportError("PrepareSocketToReceiver - bind error\n");
 }
 
+// Função para iniciar sockets
 void startSocket() {
   sSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
