@@ -52,3 +52,6 @@ Ao executar o programa vamos ter acesso as seguintes opções:
     0 - Finalizar
 
 Cada opção terá uma execução diferente, para a sua respectiva funcionalidade.
+
+## 😕 Observações
+Ao que tudo indica não foi resolvido o problema de `Reversão envenenada`, então pode ser que o roteador mantenha a conexão mesmo se eventualmente algum enlaçe viesse a "cair".
