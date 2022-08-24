@@ -3,7 +3,7 @@ import math
 
 # Função para calcular α
 def calculateAlpha(orderedResults):
-  return math.ceil(len(orderedResults) * 0.35)
+  return math.ceil(len(orderedResults) * 0.25)
 
 # Função para gerar array inicial
 def generateInitialElement(size):
