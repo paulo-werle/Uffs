@@ -1,0 +1,12 @@
+{
+  "files.associations": {
+    "*.js.erb": "javascript",
+    "semaphore.h": "c",
+    "array": "c",
+    "string": "c",
+    "string_view": "c",
+    "ranges": "c",
+    "span": "c",
+    "importers.h": "c"
+  }
+}
