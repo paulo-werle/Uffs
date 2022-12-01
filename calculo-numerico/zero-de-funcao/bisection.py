@@ -1,17 +1,22 @@
 import matplotlib.pyplot as plt
 from tabulate import tabulate
 import numpy as np
+import math
 
 class Bisection:
   ##### Entradas #####
   def __init__(self):
-    self.inA     = -2
-    self.inB     = 2
-    self.epsilon = 0.00005
+    self.inA     = -0.1
+    self.inB     = 0
+    self.epsilon = 1e-06
     self.outputs = []
 
+    self.xMin = self.inA
+    self.xMax = self.inB
+
   def function(self, x):
-    return pow(x, 3) - 2
+    # return -2 * pow(x, 3) + 5 * pow(x, 2) + x - 6
+    return -0.5 * pow(x, 2) - 4 * math.sin(2 * x)
 
   ##### Processamento #####
   def method(self):
@@ -44,13 +49,11 @@ class Bisection:
     print(tabulate(self.outputs, headers=['Iteração', 'A', 'B', 'X', 'f(x)']))
 
   def generateGraph(self):
-    xMin = 0
-    xMax = 2
-    linspace = np.linspace(xMin, xMax, 100)
+    linspace = np.linspace(self.xMin, self.xMax, 100)
 
     plt.figure(dpi = 100, figsize = (5, 5))
     plt.suptitle("Metodo da Bisseção")
-    plt.hlines(y = 0, xmin = xMin, xmax = xMax)
+    plt.hlines(y = 0, xmin = self.xMin, xmax = self.xMax)
     plt.plot(linspace, self.function(linspace), color = 'blue')
     for output in self.outputs:
       plt.plot(output[3], 0, marker = 'o', color= 'red')
@@ -60,4 +63,5 @@ class Bisection:
 instance = Bisection()
 instance.bisection()
 instance.printValues()
-instance.generateGraph()
+# instance.generateGraph()
+print(instance.inA, instance.inB)

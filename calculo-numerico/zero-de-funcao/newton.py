@@ -1,12 +1,13 @@
 import matplotlib.pyplot as plt
 from tabulate import tabulate
 import numpy as np
+import math
 
 class Newton:
   ##### Entradas #####
   def __init__(self):
-    self.inX     = -2
-    self.epsilon = 0.00005
+    self.inX     = -0.5
+    self.epsilon = 1e-06
     self.outputs = []
 
     self.xMin = -self.inX
@@ -16,10 +17,12 @@ class Newton:
     return float(self.inX)
 
   def function(self, x):
-    return pow(x, 3) - 2
+    # return -2 * pow(x, 3) + 5 * pow(x, 2) + x - 6
+    return -0.5 * pow(x, 2) - 4 * math.sin(2 * x)
 
   def derivativeFunction(self, x):
-    return 2 * pow(x, 2)
+    # return -6 * pow(x, 2) + 10 * x + 1
+    return - x - 8 * math.cos(2 * x)
 
   ##### Processamento #####
   def method(self):
@@ -61,4 +64,5 @@ class Newton:
 instance = Newton()
 instance.newton()
 instance.printValues()
-instance.generateGraph()
+# instance.generateGraph()
+print(instance.inX)
