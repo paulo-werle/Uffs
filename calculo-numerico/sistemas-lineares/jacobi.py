@@ -2,7 +2,7 @@
 from numpy import array, zeros, diag, diagflat, dot
 
 # Resolvendo equação atravez do metodo interativo de jacobi
-def jacobi(A, b, N = 25, x = None):
+def jacobi(A, b, N = 50, x = None):
   # Cria chute inicial
   if x is None:
     x = zeros(len(A[0]))
@@ -20,17 +20,20 @@ def jacobi(A, b, N = 25, x = None):
 
 # Entradas
 A = array([
-  [2.0, 1.0],
-  [1.0, 5.0]
+  [ 4.0,  2.0,  2.0, -1.0, 1.0],
+  [-1.0,  5.0,  0.0, -1.0, 1.0],
+  [ 1.0, -1.0,  4.0, -1.0, 1.0],
+  [ 1.0, -2.0,  1.0, -6.0, 1.0],
+  [ 1.0, -1.0,  1.0, -1.0, 7.0],
 ])
 
 b = array(
-  [1.0, 3.0]
+  [5.0, 2.0, 2.0, 1.0, 3.0]
 )
 
-guess = array(
-  [1.0, 2.0]
-)
+# guess = array(
+#   [1.0, 2.0]
+# )
 
 # Saida
 print("Solução:", jacobi(A, b))
