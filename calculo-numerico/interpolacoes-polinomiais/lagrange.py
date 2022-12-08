@@ -15,9 +15,9 @@ def lagrange(x, y, xPoint):
   print('Lagrange: (%.6f, %.6f)' % (xPoint, yPoint))
 
 # Entradas
-x = [0.00, 1.00, 2.00]
-y = [1.31, 3.51, 3.78]
-xp = 3.63
+x = [1.00, 2.00, 3.00]
+y = [6.00, 3.00, 2.00]
+xp = 2.2
 
 # Execução
 lagrange(x, y, xp)

@@ -8,9 +8,9 @@ def diferencasFinitas(x, xi, yi):
   return yi[0]+sum((linoperator(i,0)/np.math.factorial(i))*reduce(lambda a,b : a*b, [z(x)-j for j in range(i)], 1) for i in range(1,len(xi)))
 
 # Entradas
-x = [0.00, 1.00, 2.00]
-y = [1.31, 3.51, 3.78]
-xp = 3.63
+x = [1.00, 2.00, 3.00]
+y = [6.00, 3.00, 2.00]
+xp = 2.2
 
 print('Diferencas Finitas: (%.6f, %.6f)' % (xp, diferencasFinitas(xp, x, y)))
 
