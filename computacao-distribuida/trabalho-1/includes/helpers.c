@@ -42,6 +42,22 @@ char *startMessage() {
   return message;
 }
 
+// Função: startRouter
+//   description: Responsavel por pegar o router a ser mandado
+//   params: nul
+//   return: sendRouter<Router>
+Router *startRouter() {
+  Router *sendRouter = malloc(sizeof(Router));
+
+  printf("Informe o ip do destino: EX: 127.0.0.1 \n");
+  scanf("%s", sendRouter->ip);
+
+  printf("Informe a porta do destino: EX: 3000 \n");
+  scanf("%d%*c", &sendRouter->port);
+
+  return sendRouter;
+}
+
 // Função: generateStructure
 //   description: Responsavel por gerar a estrutura de dados
 //   params: destination<Router>, message<String>

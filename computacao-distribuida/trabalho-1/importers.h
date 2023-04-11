@@ -66,6 +66,13 @@ Router *handleArguments(int number, char *args[]);
 char *startMessage();
 
 // -- helpers.c
+// Função: startRouter
+//   description: Responsavel por pegar o router a ser mandado
+//   params: nul
+//   return: sendRouter<Router>
+Router *startRouter();
+
+// -- helpers.c
 // Função: generateStructure
 //   description: Responsavel por gerar a estrutura de dados
 //   params: destination<Router>, message<String>

@@ -21,12 +21,9 @@ int menuOptions() {
 //   params: null
 //   return: null
 void scheduleMessageSending() {
-
-  // router = getDestinationInformation();
-  // TODO - Aqui vamos ter que informar o roteador
-
+  Router *sendRouter = startRouter();
   char *message = startMessage();
-  Structure *structure = generateStructure(router, message);
+  Structure *structure = generateStructure(sendRouter, message);
 
   // Coloca estrutura na fila de saida
   pthread_mutex_lock(&exitMt);
