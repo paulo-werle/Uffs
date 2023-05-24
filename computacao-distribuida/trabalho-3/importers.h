@@ -1,4 +1,3 @@
-#include <iostream>
 #include <arpa/inet.h>
 #include <limits.h>
 #include <pthread.h>
@@ -20,7 +19,7 @@
 #define ERROR_CODE -1
 
 // Inclui arquivo com estruturas
-#include "./dataStructure.cpp"
+#include "./dataStructure.c"
 
 // ----- Variables -----
 // -- Informações do roteador
