@@ -3,6 +3,7 @@
 // Informações do roteador
 Router *router;
 Connections *connections;
+int relativeTime;
 
 // Listas
 List *entryList;
@@ -70,25 +71,28 @@ void destroyThreads() {
 }
 
 int main(int number, char *args[]) {
+  // Inicia tempo relativo
+  relativeTime = 0;
+
   // Argumentos de inicialização
   router = handleArguments(number, args);
 
   // Guarda conexões
   setConnections();
-  // printf("Informações do router \n");
-  // printf("%d -> %s:%d \n", router->id, router->ip, router->port);
-  // printf("\n");
+  printf("Informações do router \n");
+  printf("%d -> %s:%d \n", router->id, router->ip, router->port);
+  printf("\n");
 
-  // printf("Lista de router \n");
-  // for (int i = 0; i < connections->number; i++) {
-  //   printf(
-  //     "%d -> %s:%d \n",
-  //     connections->routers[i].id,
-  //     connections->routers[i].ip,
-  //     connections->routers[i].port
-  //   );
-  // }
-  // printf("\n");
+  printf("Lista de router \n");
+  for (int i = 0; i < connections->number; i++) {
+    printf(
+      "%d -> %s:%d \n",
+      connections->routers[i].id,
+      connections->routers[i].ip,
+      connections->routers[i].port
+    );
+  }
+  printf("\n");
 
   // Inicia sockets
   startSocket();

@@ -8,7 +8,7 @@ int menuOptions() {
   int option;
 
   printf("Digite a opção desejada \n");
-  printf("1 - Enviar mensagem \n");
+  printf("1 - Enviar operação \n");
   printf("2 - Exibir mensagens de dados recebidas \n");
   printf("0 - Finalizar \n");
   scanf("%d%*c", &option);
@@ -21,15 +21,17 @@ int menuOptions() {
 //   params: null
 //   return: null
 void scheduleMessageSending() {
-  Router *sendRouter = startRouter();
   char *message = startMessage();
-  Structure *structure = generateStructure(sendRouter, message);
 
-  // Coloca estrutura na fila de saida
-  pthread_mutex_lock(&exitMt);
-  exitList = insertInTheList(exitList, structure);
-  pthread_mutex_unlock(&exitMt);
-  sem_post(&senderSm);
+  for (int index = 0; index < connections->number; index++) {
+    Structure *structure = generateStructure(&connections->routers[index], message);
+
+    // Coloca estrutura na fila de saida
+    pthread_mutex_lock(&exitMt);
+    exitList = insertInTheList(exitList, structure);
+    pthread_mutex_unlock(&exitMt);
+    sem_post(&senderSm);
+  }
 }
 
 // Função: showMessages
@@ -39,9 +41,12 @@ void scheduleMessageSending() {
 List *showMessages(List *list) {
   printf("----------> Mensagens recebidas <----------\n");
   while (list != NULL) {
-    printf("Origem: %s:%d \n", list->structure->source.ip, list->structure->source.port);
-    printf("Destino: %s:%d \n", list->structure->destination.ip, list->structure->destination.port);
-    printf("Mensagem: %s \n\n", list->structure->message);
+    printf("Origem: %s:%d      \n", list->structure->source.ip,      list->structure->source.port     );
+    printf("Destino: %s:%d     \n", list->structure->destination.ip, list->structure->destination.port);
+    printf("Tipo: %s           \n", list->structure->type         );
+    printf("Indice: %d         \n", list->structure->index        );
+    printf("Tempo relativo: %d \n", list->structure->relativeTime );
+    printf("Mensagem: %s       \n", list->structure->message      );
 
     list = removeFromList(list);
   }

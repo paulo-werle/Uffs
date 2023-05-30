@@ -25,6 +25,7 @@
 // -- Informações do roteador
 extern Router *router;
 extern Connections *connections;
+extern int relativeTime;
 
 // -- Listas
 extern List *entryList;
@@ -72,13 +73,6 @@ Router *handleArguments(int number, char *args[]);
 //   params: nul
 //   return: message<String>
 char *startMessage();
-
-// -- helpers.c
-// Função: startRouter
-//   description: Responsavel por pegar o router a ser mandado
-//   params: nul
-//   return: sendRouter<Router>
-Router *startRouter();
 
 // -- helpers.c
 // Função: generateStructure

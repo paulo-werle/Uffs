@@ -50,7 +50,7 @@ int fetchNumberOfRouter(FILE *file) {
   int number = 0;
 
   while (matchRouter(rt, file) == 3)
-    if (router->id != rt->id) number++;
+    number++;
 
   fseek(file, 0, SEEK_SET);
   return number;
@@ -66,8 +66,7 @@ Router *fetchRouterData(FILE *file) {
   int index = 0;
 
   while (matchRouter(rt, file) == 3)
-    if (router->id != rt->id)
-      rts[index++] = *rt;
+    rts[index++] = *rt;
 
   fseek(file, 0, SEEK_SET);
   return rts;

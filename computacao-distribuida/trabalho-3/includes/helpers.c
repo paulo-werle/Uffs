@@ -34,26 +34,10 @@ char *startMessage() {
 
   char *message = malloc(MESSAGE_SIZE);
 
-  printf("Informe a mensagem a ser enviada: ");
+  printf("Informe a operação a ser realizada: ");
   fgets(message, MESSAGE_SIZE, stdin);
 
   return message;
-}
-
-// Função: startRouter
-//   description: Responsavel por pegar o router a ser mandado
-//   params: nul
-//   return: sendRouter<Router>
-Router *startRouter() {
-  Router *sendRouter = malloc(sizeof(Router));
-
-  printf("Informe o ip do destino: EX: 127.0.0.1 \n");
-  scanf("%s", sendRouter->ip);
-
-  printf("Informe a porta do destino: EX: 3000 \n");
-  scanf("%d%*c", &sendRouter->port);
-
-  return sendRouter;
 }
 
 // Função: generateStructure
@@ -64,9 +48,19 @@ Structure *generateStructure(Router *destination, char message[]) {
 
   Structure *structure = malloc(sizeof(Structure));
 
+  printf("generateStructure \n");
+  printf("%d -> %s:%d \n", destination->id, destination->ip, destination->port);
+  printf("\n");
+
+  // Dados
   structure->source = *router;
   structure->destination = *destination;
   strcpy(structure->message, message);
+
+  // Configurações
+  strcpy(structure->type, "msg");
+  structure->index = router->id;
+  structure->relativeTime = relativeTime;
 
   return structure;
 }
