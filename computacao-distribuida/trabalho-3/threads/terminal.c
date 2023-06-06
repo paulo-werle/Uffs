@@ -9,7 +9,10 @@ int menuOptions() {
 
   printf("Digite a opção desejada \n");
   printf("1 - Enviar operação \n");
-  printf("2 - Exibir mensagens de dados recebidas \n");
+  printf("2 - Exibir operações executadas \n");
+  printf("3 - Exibir mensagens recebidas \n");
+  printf("4 - Exibir confirmações recebidas \n");
+  printf("5 - Exibir tempo relativo \n");
   printf("0 - Finalizar \n");
   scanf("%d%*c", &option);
 
@@ -24,7 +27,7 @@ void scheduleMessageSending() {
   char *message = startMessage();
 
   for (int index = 0; index < connections->number; index++) {
-    Structure *structure = generateStructure(&connections->routers[index], message);
+    Structure *structure = generateStructure(&connections->routers[index], message, "msg");
 
     // Coloca estrutura na fila de saida
     pthread_mutex_lock(&exitMt);
@@ -55,14 +58,14 @@ List *showMessages(List *list) {
   return list;
 }
 
-// Função: showDataReceived
+// Função: showList
 //   description: Responsavel por imprimir valores da fila de saida
 //   params: null
 //   return: null
-void showDataReceived() {
-  pthread_mutex_lock(&dataMt);
-  dataList = showMessages(dataList);
-  pthread_mutex_unlock(&dataMt);
+void showList(List *list, pthread_mutex_t mt) {
+  pthread_mutex_lock(&mt);
+  dataList = showMessages(list);
+  pthread_mutex_unlock(&mt);
 }
 
 // Função: terminalFn
@@ -74,15 +77,27 @@ void *terminalFn() {
     int option = menuOptions();
 
     switch(option) {
-      // Enviar mensagem
+      // 1 - Enviar operação
       case 1 :
         scheduleMessageSending();
         break;
-      // Exibir mensagens de dados recebidas
+      // 2 - Exibir operações executadas
       case 2 :
-        showDataReceived();
+        showList(dataList, dataMt);
         break;
-      // Finalizar
+      // 3 - Exibir mensagens recebidas
+      case 3 :
+        showList(msgList, msgMt);
+        break;
+      // 4 - Exibir confirmações recebidas
+      case 4 :
+        showList(ackList, ackMt);
+        break;
+      // 5 - Exibir tempo relativo
+      case 5 :
+        printf("Tempo relativo: %d \n\n", relativeTime);
+        break;
+      // 0 - Finalizar
       case 0 :
         exit(0);
         break;

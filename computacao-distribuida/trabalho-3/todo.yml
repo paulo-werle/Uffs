@@ -1,17 +1,25 @@
-1 - Envio de mensagem
-1.1 - O indice vai ser o id do router
-1.2 - Vai precisar mandar para todos os routers da lista
+# 1 - Envio de mensagem
+# 1.1 - O indice vai ser o id do router
+# 1.2 - Vai precisar mandar para todos os routers da lista
+# 1.3 - Incrementa tempo relativo e manda
 
-2 - Recebimento
-2.1 - Precisamos percorrer a lista de entrada, para ver processos que podem ser executados
-2.2 - Mandar confirmação de que pode ser executado o processo
+# 2 - Recebimento
+# 2.1 - Precisamos percorrer a lista de entrada, para ver processos que podem ser executados
+# 2.2 - Mandar confirmação de que pode ser executado o processo
 
 3 - Confirmações
-3.1 - Precisa mandar confirmação de recebimento para aqueles que tem um tempo relativo menor
-3.2 - Incrementar valor para poder ser executado
+3.1 - Precisa mandar confirmação de recebimento para aqueles que tem um tempo_relativo.id menor ou igual
+# 3.2 - Precisa ser mandado a confirmação para todos
 
 4 - Execução
-4.1 - Pode ser executado o processo quando ter um total de connections.number + 1 de respostas
+4.1 - Pode ser executado o processo quando ter um total de connections.number de respostas
 4.2 - Nesse momento vai ser colocado na fila de dados
 
 Obs: Deixar separado as mensagens e confirmações em duas filas diferentes
+
+Filas:
+- Entrada
+- Saida
+- Mensagem
+- Confirmações
+- Data

@@ -1,5 +1,38 @@
 #include "../importers.h"
 
+// Função: typeAck
+//   description: Responsavel por colocar estrutura na fila de mensagens
+//   params: null
+//   return: null
+void typeMsg() {
+  pthread_mutex_lock(&msgMt);
+  msgList = insertOrderedInTheList(msgList, entryList->structure);
+  pthread_mutex_unlock(&msgMt);
+}
+
+// Função: typeAck
+//   description: Responsavel por colocar estrutura na fila de confirmações
+//   params: null
+//   return: null
+void typeAck() {
+  pthread_mutex_lock(&ackMt);
+  ackList = insertOrderedInTheList(ackList, entryList->structure);
+  pthread_mutex_unlock(&ackMt);
+}
+
+
+void scheduleConfirmationSending() {
+  for (int index = 0; index < connections->number; index++) {
+    Structure *structure = generateStructure(&connections->routers[index], entryList->structure->message, "ack");
+
+    // Coloca estrutura na fila de saida
+    pthread_mutex_lock(&exitMt);
+    exitList = insertInTheList(exitList, structure);
+    pthread_mutex_unlock(&exitMt);
+    sem_post(&senderSm);
+  }
+}
+
 // Função: packetHandlerFn
 //   description: Responsavel por gerenciar os pacotes recebidos
 //   params: null
@@ -8,10 +41,15 @@ void *packetHandlerFn() {
   while(true) {
     sem_wait(&packetHandlerSm);
 
-    // Insere na lista de dados
-    pthread_mutex_lock(&dataMt);
-    dataList = insertInTheList(dataList, entryList->structure);
-    pthread_mutex_unlock(&dataMt);
+    // Insere na respectiva lista
+    if (strcmp(entryList->structure->type, "msg") == 0) {
+      typeMsg();
+      scheduleConfirmationSending();
+    }
+
+    if (strcmp(entryList->structure->type, "ack") == 0) {
+      typeAck();
+    }
 
     // Remove da lista de saida
     pthread_mutex_lock(&entryMt);

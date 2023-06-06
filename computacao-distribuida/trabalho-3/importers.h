@@ -28,25 +28,29 @@ extern Connections *connections;
 extern int relativeTime;
 
 // -- Listas
-extern List *entryList;
-extern List *exitList;
-extern List *dataList;
+extern List *entryList;  // Lista de entrada
+extern List *exitList;   // Lista de saida
+extern List *dataList;   // Lista de operações executadas
+extern List *msgList;    // Lista de mensagens
+extern List *ackList;    // Lista de confirmações
 
 // -- Threads
 extern pthread_t terminalTh;
 extern pthread_t senderTh;
 extern pthread_t receiverTh;
 extern pthread_t packetHandlerTh;
-// extern pthread_t signalTh;
 
 // -- Mutexes
 extern pthread_mutex_t entryMt;
 extern pthread_mutex_t exitMt;
 extern pthread_mutex_t dataMt;
+extern pthread_mutex_t msgMt;
+extern pthread_mutex_t ackMt;
 
 // -- Semáforos
 extern sem_t senderSm;
 extern sem_t packetHandlerSm;
+extern sem_t ackSm;
 
 // -- Socket
 extern int sSocket;
@@ -79,7 +83,7 @@ char *startMessage();
 //   description: Responsavel por gerar a estrutura de dados
 //   params: destination<Router>, message<String>
 //   return: struncture<Structure>
-Structure *generateStructure(Router *destination, char message[]);
+Structure *generateStructure(Router *destination, char message[], char type[]);
 
 // -- helpers.c
 // Função: reportError
@@ -101,6 +105,13 @@ List *removeFromList(List *list);
 //   params: list<List>, structure<Structure>
 //   return: list<List>
 List *insertInTheList(List *list, Structure *structure);
+
+// -- lists.c
+// Função: insertOrderedInTheList
+//   description: Responsavel por inserir itens na lista ordenadamente
+//   params: list<List>, structure<Structure>
+//   return: list<List>
+List *insertOrderedInTheList(List *list, Structure *structure);
 
 // -- sockets.c
 // Função: startSocket

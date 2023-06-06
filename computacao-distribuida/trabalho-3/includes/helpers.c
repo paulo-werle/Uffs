@@ -44,13 +44,8 @@ char *startMessage() {
 //   description: Responsavel por gerar a estrutura de dados
 //   params: destination<Router>, message<String>
 //   return: struncture<Structure>
-Structure *generateStructure(Router *destination, char message[]) {
-
+Structure *generateStructure(Router *destination, char message[], char type[]) {
   Structure *structure = malloc(sizeof(Structure));
-
-  printf("generateStructure \n");
-  printf("%d -> %s:%d \n", destination->id, destination->ip, destination->port);
-  printf("\n");
 
   // Dados
   structure->source = *router;
@@ -58,7 +53,7 @@ Structure *generateStructure(Router *destination, char message[]) {
   strcpy(structure->message, message);
 
   // Configurações
-  strcpy(structure->type, "msg");
+  strcpy(structure->type, type);
   structure->index = router->id;
   structure->relativeTime = relativeTime;
 

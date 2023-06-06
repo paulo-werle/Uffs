@@ -6,9 +6,11 @@ Connections *connections;
 int relativeTime;
 
 // Listas
-List *entryList;
-List *exitList;
-List *dataList;
+List *entryList;  // Lista de entrada
+List *exitList;   // Lista de saida
+List *dataList;   // Lista de operações executadas
+List *msgList;    // Lista de mensagens
+List *ackList;    // Lista de confirmações
 
 // Threads
 pthread_t terminalTh;
@@ -20,10 +22,13 @@ pthread_t packetHandlerTh;
 pthread_mutex_t entryMt;
 pthread_mutex_t exitMt;
 pthread_mutex_t dataMt;
+pthread_mutex_t msgMt;
+pthread_mutex_t ackMt;
 
 // Semáforos
 sem_t senderSm;
 sem_t packetHandlerSm;
+sem_t ackSm;
 
 // Socket
 int sSocket;
@@ -37,6 +42,7 @@ struct sockaddr_in receiverAddr;
 void createSemaphores() {
   sem_init(&senderSm,        0, 0);
   sem_init(&packetHandlerSm, 0, 0);
+  sem_init(&ackSm, 0, 0);
 }
 
 // Função: destroySemaphores
@@ -46,6 +52,7 @@ void createSemaphores() {
 void destroySemaphores() {
   sem_destroy(&senderSm);
   sem_destroy(&packetHandlerSm);
+  sem_destroy(&ackSm);
 }
 
 // Função: createThreads
@@ -72,27 +79,11 @@ void destroyThreads() {
 
 int main(int number, char *args[]) {
   // Inicia tempo relativo
-  relativeTime = 0;
+  relativeTime = 1;
 
   // Argumentos de inicialização
   router = handleArguments(number, args);
-
-  // Guarda conexões
   setConnections();
-  printf("Informações do router \n");
-  printf("%d -> %s:%d \n", router->id, router->ip, router->port);
-  printf("\n");
-
-  printf("Lista de router \n");
-  for (int i = 0; i < connections->number; i++) {
-    printf(
-      "%d -> %s:%d \n",
-      connections->routers[i].id,
-      connections->routers[i].ip,
-      connections->routers[i].port
-    );
-  }
-  printf("\n");
 
   // Inicia sockets
   startSocket();
