@@ -23,7 +23,7 @@ void typeAck() {
 
 void scheduleConfirmationSending() {
   for (int index = 0; index < connections->number; index++) {
-    Structure *structure = generateStructure(&connections->routers[index], entryList->structure->message, "ack");
+    Structure *structure = generateAckStructure(&connections->routers[index], entryList->structure);
 
     // Coloca estrutura na fila de saida
     pthread_mutex_lock(&exitMt);
@@ -40,6 +40,7 @@ void scheduleConfirmationSending() {
 void *packetHandlerFn() {
   while(true) {
     sem_wait(&packetHandlerSm);
+    sleep(0.5);
 
     // Insere na respectiva lista
     if (strcmp(entryList->structure->type, "msg") == 0) {
@@ -49,6 +50,7 @@ void *packetHandlerFn() {
 
     if (strcmp(entryList->structure->type, "ack") == 0) {
       typeAck();
+      sem_post(&ackSm);
     }
 
     // Remove da lista de saida

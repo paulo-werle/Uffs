@@ -13,6 +13,7 @@ typedef struct _structure
   Router source;
   Router destination;
 
+  int uuid;
   // Operações: dep100 || jur1% || credito
   char message[MESSAGE_SIZE];
   // Tipo: msg || ack

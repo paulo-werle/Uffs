@@ -32,7 +32,7 @@ List *insertOrderedInTheList(List *list, Structure *structure) {
 // Função: insertInTheList
 //   description: Responsavel por inserir itens na lista
 //   params: list<List>, structure<Structure>
-//   return: list<List>
+//   return: list<List>  if(list == NULL)
 List *insertInTheList(List *list, Structure *structure) {
   List *auxE, *newE = malloc(sizeof(List));
 
@@ -59,8 +59,10 @@ List *insertInTheList(List *list, Structure *structure) {
 //   params: list<List>
 //   return: list<List>
 List *removeFromList(List *list) {
-  List *auxE = list->next;
+  if(list == NULL)
+    return NULL;
 
+  List *auxE = list->next;
   free(list);
   return auxE;
 }

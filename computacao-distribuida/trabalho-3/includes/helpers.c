@@ -40,11 +40,11 @@ char *startMessage() {
   return message;
 }
 
-// Função: generateStructure
-//   description: Responsavel por gerar a estrutura de dados
+// Função: generateMsgStructure
+//   description: Responsavel por gerar a estrutura da mensagem
 //   params: destination<Router>, message<String>
 //   return: struncture<Structure>
-Structure *generateStructure(Router *destination, char message[], char type[]) {
+Structure *generateMsgStructure(Router *destination, char message[], int uuid) {
   Structure *structure = malloc(sizeof(Structure));
 
   // Dados
@@ -53,11 +53,33 @@ Structure *generateStructure(Router *destination, char message[], char type[]) {
   strcpy(structure->message, message);
 
   // Configurações
-  strcpy(structure->type, type);
+  structure->uuid = uuid;
+  strcpy(structure->type, "msg");
   structure->index = router->id;
   structure->relativeTime = relativeTime;
 
   return structure;
+}
+
+// Função: generateAckStructure
+//   description: Responsavel por gerar a estrutura da confirmação
+//   params: destination<Router>, message<String>
+//   return: struncture<Structure>
+Structure *generateAckStructure(Router *destination, Structure *structure) {
+  Structure *newStructure = malloc(sizeof(Structure));
+
+  // Dados
+  newStructure->source = *router;
+  newStructure->destination = *destination;
+  strcpy(newStructure->message, structure->message);
+
+  // Configurações
+  strcpy(newStructure->type, "ack");
+  newStructure->uuid = structure->uuid;
+  newStructure->index = structure->index;
+  newStructure->relativeTime = structure->relativeTime;
+
+  return newStructure;
 }
 
 // Função: reportError

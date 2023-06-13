@@ -17,6 +17,7 @@ pthread_t terminalTh;
 pthread_t senderTh;
 pthread_t receiverTh;
 pthread_t packetHandlerTh;
+pthread_t executorTh;
 
 // Mutexes
 pthread_mutex_t entryMt;
@@ -64,6 +65,7 @@ void createThreads() {
   pthread_create(&receiverTh,      NULL, &receiverFn,      NULL);
   pthread_create(&packetHandlerTh, NULL, &packetHandlerFn, NULL);
   pthread_create(&senderTh,        NULL, &senderFn,        NULL);
+  pthread_create(&executorTh,      NULL, &executorFn,      NULL);
 }
 
 // Função: destroyThreads
@@ -75,9 +77,12 @@ void destroyThreads() {
   pthread_join(receiverTh,      NULL);
   pthread_join(packetHandlerTh, NULL);
   pthread_join(senderTh,        NULL);
+  pthread_join(executorTh,      NULL);
 }
 
 int main(int number, char *args[]) {
+  srand(time(NULL));
+
   // Inicia tempo relativo
   relativeTime = 1;
 

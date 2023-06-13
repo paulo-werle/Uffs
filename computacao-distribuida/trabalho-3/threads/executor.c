@@ -5,42 +5,36 @@
 //   params: null
 //   return: null
 int countAcks(Structure *structure) {
-  List *auxList = ackList;
+  List *list = ackList;
   int number = 0;
 
-  while (auxList->next != NULL) {
-    if (
-      auxList->structure->relativeTime == structure->relativeTime &&
-      !strcmp(auxList->structure->message, structure->message)
-    ) {
+  while (list != NULL) {
+    Structure *listStructure = list->structure;
+
+    if (listStructure->uuid == structure->uuid && listStructure.relativeTime <= structure->relativeTime) {
       number++;
     }
 
-    auxList = auxList->next;
+    list = list->next;
   }
 
   return number;
 }
 
 void removeAcks(Structure *structure) {
-  List *removeList, *auxList = ackList;
+  List *auxList = NULL, *list = ackList;
 
-  while (auxList->next != NULL) {
-    removeList = NULL;
+  while (list != NULL) {
+    Structure *listStructure = list->structure;
 
-    if (
-      auxList->structure->relativeTime == structure->relativeTime &&
-      auxList->structure->index == structure->index &&
-      !strcmp(auxList->structure->message, structure->message)
-    ) {
-      removeList = auxList;
+    if (listStructure->uuid != structure->uuid) {
+      auxList = insertOrderedInTheList(auxList, listStructure);
     }
 
-    auxList = auxList->next;
-    if (removeList != NULL) {
-      removeList = removeFromList(removeList);
-    }
+    list = list->next;
   }
+
+  ackList = auxList;
 }
 
 // Função: execute
@@ -49,7 +43,6 @@ void removeAcks(Structure *structure) {
 //   return: null
 void execute(Structure *structure) {
 
-  // Verifica se tem conexões suficiente para executar
   if (countAcks(structure) == connections->number) {
     pthread_mutex_lock(&dataMt);
     dataList = insertInTheList(dataList, structure);

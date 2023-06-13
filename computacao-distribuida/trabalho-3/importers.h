@@ -39,6 +39,7 @@ extern pthread_t terminalTh;
 extern pthread_t senderTh;
 extern pthread_t receiverTh;
 extern pthread_t packetHandlerTh;
+extern pthread_t executorTh;
 
 // -- Mutexes
 extern pthread_mutex_t entryMt;
@@ -79,11 +80,18 @@ Router *handleArguments(int number, char *args[]);
 char *startMessage();
 
 // -- helpers.c
-// Função: generateStructure
-//   description: Responsavel por gerar a estrutura de dados
+// Função: generateMsgStructure
+//   description: Responsavel por gerar a estrutura da mensagem
 //   params: destination<Router>, message<String>
 //   return: struncture<Structure>
-Structure *generateStructure(Router *destination, char message[], char type[]);
+Structure *generateMsgStructure(Router *destination, char message[], int uuid);
+
+// -- helpers.c
+// Função: generateAckStructure
+//   description: Responsavel por gerar a estrutura da confirmação
+//   params: destination<Router>, message<String>
+//   return: struncture<Structure>
+Structure *generateAckStructure(Router *destination, Structure *structure);
 
 // -- helpers.c
 // Função: reportError
@@ -147,3 +155,10 @@ void *terminalFn();
 //   params: null
 //   return: null
 void *packetHandlerFn();
+
+// -- threads
+// Função: &executorFn
+//   description: Responsavel por executar os processos
+//   params: null
+//   return: null
+void *executorFn();
