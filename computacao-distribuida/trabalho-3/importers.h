@@ -40,6 +40,7 @@ extern pthread_t senderTh;
 extern pthread_t receiverTh;
 extern pthread_t packetHandlerTh;
 extern pthread_t executorTh;
+extern pthread_t ackTh;
 
 // -- Mutexes
 extern pthread_mutex_t entryMt;
@@ -52,6 +53,7 @@ extern pthread_mutex_t ackMt;
 extern sem_t senderSm;
 extern sem_t packetHandlerSm;
 extern sem_t ackSm;
+extern sem_t senderAckSm;
 
 // -- Socket
 extern int sSocket;
@@ -162,3 +164,9 @@ void *packetHandlerFn();
 //   params: null
 //   return: null
 void *executorFn();
+
+// Função: ackFn
+//   description: Responsavel por executar as operações das mensagens confirmadas
+//   params: null
+//   return: null
+void *ackFn();

@@ -1,5 +1,13 @@
 #include "../importers.h"
 
+bool compareUuid(int uuid1, int uuid2) {
+  return uuid1 == uuid2;
+}
+
+bool compareRelativeTimeAndIndexs(int time, int index) {
+  return relativeTime >= time;
+}
+
 // Função: countAcks
 //   description: Conta quantidade de acks correspondente
 //   params: null
@@ -11,7 +19,10 @@ int countAcks(Structure *structure) {
   while (list != NULL) {
     Structure *listStructure = list->structure;
 
-    if (listStructure->uuid == structure->uuid && listStructure.relativeTime <= structure->relativeTime) {
+    if (
+      compareUuid(listStructure->uuid, structure->uuid) &&
+      compareRelativeTimeAndIndexs(structure->relativeTime, structure->index)
+    ) {
       number++;
     }
 
@@ -60,8 +71,10 @@ void *executorFn() {
   while(true) {
     sem_wait(&ackSm);
 
-    pthread_mutex_lock(&ackMt);
-    execute(ackList->structure);
-    pthread_mutex_unlock(&ackMt);
+    if (ackList != NULL) {
+      pthread_mutex_lock(&ackMt);
+      execute(ackList->structure);
+      pthread_mutex_unlock(&ackMt);
+    }
   }
 }

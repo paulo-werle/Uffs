@@ -18,6 +18,7 @@ pthread_t senderTh;
 pthread_t receiverTh;
 pthread_t packetHandlerTh;
 pthread_t executorTh;
+pthread_t ackTh;
 
 // Mutexes
 pthread_mutex_t entryMt;
@@ -27,6 +28,7 @@ pthread_mutex_t msgMt;
 pthread_mutex_t ackMt;
 
 // Semáforos
+sem_t senderAckSm;
 sem_t senderSm;
 sem_t packetHandlerSm;
 sem_t ackSm;
@@ -43,7 +45,8 @@ struct sockaddr_in receiverAddr;
 void createSemaphores() {
   sem_init(&senderSm,        0, 0);
   sem_init(&packetHandlerSm, 0, 0);
-  sem_init(&ackSm, 0, 0);
+  sem_init(&ackSm,           0, 0);
+  sem_init(&senderAckSm,     0, 0);
 }
 
 // Função: destroySemaphores
@@ -54,6 +57,7 @@ void destroySemaphores() {
   sem_destroy(&senderSm);
   sem_destroy(&packetHandlerSm);
   sem_destroy(&ackSm);
+  sem_destroy(&senderAckSm);
 }
 
 // Função: createThreads
@@ -66,6 +70,7 @@ void createThreads() {
   pthread_create(&packetHandlerTh, NULL, &packetHandlerFn, NULL);
   pthread_create(&senderTh,        NULL, &senderFn,        NULL);
   pthread_create(&executorTh,      NULL, &executorFn,      NULL);
+  pthread_create(&ackTh,           NULL, &ackFn,           NULL);
 }
 
 // Função: destroyThreads
@@ -78,6 +83,7 @@ void destroyThreads() {
   pthread_join(packetHandlerTh, NULL);
   pthread_join(senderTh,        NULL);
   pthread_join(executorTh,      NULL);
+  pthread_join(ackTh,           NULL);
 }
 
 int main(int number, char *args[]) {

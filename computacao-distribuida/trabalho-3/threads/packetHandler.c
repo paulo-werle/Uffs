@@ -20,19 +20,6 @@ void typeAck() {
   pthread_mutex_unlock(&ackMt);
 }
 
-
-void scheduleConfirmationSending() {
-  for (int index = 0; index < connections->number; index++) {
-    Structure *structure = generateAckStructure(&connections->routers[index], entryList->structure);
-
-    // Coloca estrutura na fila de saida
-    pthread_mutex_lock(&exitMt);
-    exitList = insertInTheList(exitList, structure);
-    pthread_mutex_unlock(&exitMt);
-    sem_post(&senderSm);
-  }
-}
-
 // Função: packetHandlerFn
 //   description: Responsavel por gerenciar os pacotes recebidos
 //   params: null
@@ -40,17 +27,14 @@ void scheduleConfirmationSending() {
 void *packetHandlerFn() {
   while(true) {
     sem_wait(&packetHandlerSm);
-    sleep(0.5);
 
     // Insere na respectiva lista
     if (strcmp(entryList->structure->type, "msg") == 0) {
       typeMsg();
-      scheduleConfirmationSending();
     }
 
     if (strcmp(entryList->structure->type, "ack") == 0) {
       typeAck();
-      sem_post(&ackSm);
     }
 
     // Remove da lista de saida

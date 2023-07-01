@@ -34,7 +34,6 @@ void scheduleMessageSending() {
     pthread_mutex_lock(&exitMt);
     exitList = insertInTheList(exitList, structure);
     pthread_mutex_unlock(&exitMt);
-    relativeTime++;
     sem_post(&senderSm);
   }
 }
@@ -80,6 +79,7 @@ List *showList(List *list, pthread_mutex_t mt) {
 //   return: null
 void *terminalFn() {
   while (true) {
+    relativeTime++;
     int option = menuOptions();
 
     switch(option) {
@@ -108,5 +108,8 @@ void *terminalFn() {
         exit(0);
         break;
     }
+
+    sem_post(&senderAckSm);
+    sem_post(&ackSm);
   }
 }
