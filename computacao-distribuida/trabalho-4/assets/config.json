@@ -3,21 +3,14 @@
     "id": 1,
     "port": 25001,
     "ip": "127.0.0.1",
-    "table": [1, 7],
-    "allocation": 7
+    "table": [1, 10],
+    "allocation": 10
   },
   {
     "id": 2,
     "port": 25002,
     "ip": "127.0.0.1",
-    "table": [8, 20],
-    "allocation": 13
-  },
-  {
-    "id": 3,
-    "port": 25003,
-    "ip": "127.0.0.1",
-    "table": [21, 30],
+    "table": [11, 20],
     "allocation": 10
   }
 ]

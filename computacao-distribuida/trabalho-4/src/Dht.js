@@ -62,7 +62,6 @@ class Dht {
   }
 
   router(hash) {
-    console.log(hash)
     const id = Object.keys(this.routerTable).find((key) => (
       this.routerTable[key].includes(hash)
     ))
@@ -79,7 +78,7 @@ class Dht {
       this.insert(message.data, message.hash);
     }
     else if ( message.op == 'search' ) {
-      this.eventBus.emit('sendToAnotherRouter',{ op: 'answer', data: this.search(message.data, message.hash)});
+      this.eventBus.emit('sendToAnotherRouter',{ to: message.from, op: 'answer', data: this.search(message.data, message.hash)});
     }
     else if( message.op == 'answer') {
       console.log(message.data);
@@ -106,12 +105,14 @@ class Dht {
   search(rg, position = null) {
     let hash = position || this.hash(rg);
 
-    if (this.isBlank(hash)) {
-      return this.eventBus.emit('sendToAnotherRouter', { op: 'search', hash: hash, data: rg });
+    let router = this.router(hash);
+    if (router !== this.id) {
+      return this.eventBus.emit('sendToAnotherRouter', { from: this.id, to: router, op: 'search', hash: hash, data: rg });
     }
 
-    if (this.memory[hash].rg === rg) {
-      return this.memory[hash];
+    let address = this.address(hash)
+    if (this.memory[address].rg === rg) {
+      return this.memory[address];
     }
 
     return this.search(rg, hash + 1);
