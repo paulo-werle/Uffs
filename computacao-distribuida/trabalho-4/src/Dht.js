@@ -41,29 +41,21 @@ class Dht {
     })
   }
 
-  // isUndefined(hash) {
-  //   return this.memory[hash] === undefined;
-  // }
+  hash(rg, position) {
+    if (position !== null) {
+      return position % this.hashNumber
+    }
 
-  // isBusy(hash) {
-  //   return this.memory[hash] !== ''
-  // }
-
-  // parseHashToMemory(hash) {
-  //   return hash % this.connection.allocation
-  // }
-
-  hash(rg) {
-    return rg % this.hashNumber + 1;
+    return rg % this.hashNumber
   }
 
   address(hash) {
-    return hash % this.config.allocation - 1;
+    return hash % this.config.allocation;
   }
 
   router(hash) {
     const id = Object.keys(this.routerTable).find((key) => (
-      this.routerTable[key].includes(hash)
+      this.routerTable[key].includes(Number(hash))
     ))
 
     return Number(id)
@@ -75,6 +67,7 @@ class Dht {
 
   handleOperation(message) {
     if ( message.op == 'insert') {
+      console.log(message.hash)
       this.insert(message.data, message.hash);
     }
     else if ( message.op == 'search' ) {
@@ -87,7 +80,7 @@ class Dht {
 
   insert(item, position = null) {
     let rg = item.rg
-    let hash = position || this.hash(rg);
+    let hash = this.hash(rg, position)
 
     let router = this.router(hash);
     if (router !== this.id) {
@@ -103,7 +96,7 @@ class Dht {
   }
 
   search(rg, position = null) {
-    let hash = position || this.hash(rg);
+    let hash = this.hash(rg, position);
 
     let router = this.router(hash);
     if (router !== this.id) {
