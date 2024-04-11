@@ -1,0 +1,7 @@
+alo
+sai
+ei
++
+
+S::=oA|eA|iA
+A::=oA|eA|iA|£

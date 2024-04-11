@@ -1,0 +1,23 @@
+  def create_matrix
+    max_row = @values.map { |item| item[:row] }.compact.max || 0
+    max_col = @values.map { |item| item[:col] }.compact.max || 0
+
+    matrix = Array.new(max_row + 1) { Array.new(max_col + 1) }
+
+    @values.each do |mapping|
+      row = mapping[:row]
+      col = mapping[:col]
+      value = mapping[:value]
+
+      next if row.nil? || col.nil?
+
+      if matrix[row][col].nil?
+        matrix[row][col] = value
+      else
+        matrix[row][col] ||= []
+        matrix[row][col] << value
+      end
+    end
+
+    matrix
+  end

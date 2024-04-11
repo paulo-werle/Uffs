@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+  <meta charset="utf-8">
+  <title>My first three.js app</title>
+  <style>
+    body {
+      margin: 0
+    }
+    p {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      color: yellow;
+      font-size: 28px;
+      text-align: center;
+    }
+  </style>
+	</head>
+	<body>
+    <p>Aperte a tecla ESPAÇO para uma animação na esfera</p>
+    <script type="module">
+      import * as THREE from 'https://unpkg.com/three@0.162.0/build/three.module.js'
+
+      // Cena
+      // https://threejs.org/docs/index.html#api/en/scenes/Scene
+      const scene = new THREE.Scene()
+
+      // Câmera
+      // https://threejs.org/docs/index.html#api/en/cameras/PerspectiveCamera
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+      camera.position.z = 5
+
+      // Renderizador
+      // https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer
+      const renderer = new THREE.WebGLRenderer()
+      renderer.setSize(window.innerWidth, window.innerHeight)
+      document.body.appendChild(renderer.domElement)
+
+      // Geometria e material do primeiro cubo
+      // https://threejs.org/docs/index.html#api/en/geometries/BoxGeometry
+      // https://threejs.org/docs/index.html#api/en/materials/MeshBasicMaterial
+      const geometry1 = new THREE.BoxGeometry(1, 1, 1)
+      const material1 = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+      const cube1 = new THREE.Mesh(geometry1, material1)
+      cube1.position.x = -2
+      scene.add(cube1)
+
+      // Geometria e material do segundo cubo
+      // https://threejs.org/docs/index.html#api/en/geometries/BoxGeometry
+      // https://threejs.org/docs/index.html#api/en/materials/MeshBasicMaterial
+      const geometry2 = new THREE.BoxGeometry(1, 1, 1)
+      const material2 = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+      const cube2 = new THREE.Mesh(geometry2, material2)
+      cube2.position.x = 2
+      scene.add(cube2)
+
+      // Geometria e material da esfera
+      // https://threejs.org/docs/index.html#api/en/geometries/SphereGeometry
+      // https://threejs.org/docs/index.html#api/en/materials/MeshBasicMaterial
+      const geometry3 = new THREE.SphereGeometry(0.3, 10, 10)
+      const material3 = new THREE.MeshBasicMaterial({ color: 0x0000ff })
+      const sphere = new THREE.Mesh(geometry3, material3)
+      scene.add(sphere)
+
+      // Vetores para os cubos
+      // https://threejs.org/docs/index.html#api/en/math/Euler
+      const cubeVector  = new THREE.Vector3(0, 0,  0.01)
+      const cubeVector2 = new THREE.Vector3(0, 0, -0.03)
+
+      // Distância máxima dos movimentos
+      const movementRange = 1
+
+      // Função de animação utilizando integração de Euler
+      function cubeAnimate() {
+        requestAnimationFrame(cubeAnimate)
+
+        // Atualiza a posição dos cubos utilizando integração de Euler
+        cube1.position.add(cubeVector)
+        cube2.position.add(cubeVector2)
+
+        // Verifica se os cubos atingiram o limite de movimento
+        if (cube1.position.z >= movementRange || cube1.position.z <= -movementRange) {
+          cubeVector.z *= -1
+        }
+        if (cube2.position.z >= movementRange || cube2.position.z <= -movementRange) {
+          cubeVector2.z *= -1
+        }
+
+        renderer.render(scene, camera)
+      }
+      cubeAnimate()
+
+      // Vetores para a esfera
+      const sphereVector = new THREE.Vector3(0, 0.05, 0)
+      let moving = { 'up': false, 'down': false }
+
+      function sphereAnimate() {
+        // Condições para inverter o movimento
+        if (moving['up'] && sphere.position.y <= movementRange) {
+          sphereVector.y = Math.abs(sphereVector.y)
+        }
+        if (moving['up'] && sphere.position.y >= movementRange) {
+          moving['up'] = false
+          moving['down'] = true
+        }
+
+        // Condições para parar o movimento
+        if (moving['down'] && sphere.position.y >= 0) {
+          sphereVector.y = -Math.abs(sphereVector.y)
+        }
+        if (moving['down'] && sphere.position.y <= 0) {
+          moving['down'] = false
+        }
+
+        sphere.position.add(sphereVector)
+        renderer.render(scene, camera)
+
+        if (moving['up'] || moving['down']) {
+          requestAnimationFrame(sphereAnimate)
+        }
+      }
+
+      // Função para lidar com o pressionamento da tecla 'ESPAÇO'
+      window.addEventListener('keydown', function onKeyDown(event) {
+        if (event.code === "Space") {
+          moving['up'] = true
+          sphereAnimate()
+        }
+      })
+    </script>
+	</body>
+</html>
