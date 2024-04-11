@@ -1,0 +1,9 @@
+nessa
+nao
+sei
+foi
+
+S::=0A|1A
+A::=0A|1A|£
+S::=bA|xA|fA
+A::=bA|xA|fA|b|x|f

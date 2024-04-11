@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Archive
+class AutomatonArchive
   # Inicia parametros da classe
   def initialize(path)
     @path = path

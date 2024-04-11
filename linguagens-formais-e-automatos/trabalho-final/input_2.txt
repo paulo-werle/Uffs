@@ -1,0 +1,13 @@
+se
+entao
+senao
+enquanto
+setanto
+portanto
+conquanto
+levanto
+asbestos
+astoria
+
+S::=aA|eA|iA|oA|uA
+A::=aA|eA|iA|oA|uA|ε
