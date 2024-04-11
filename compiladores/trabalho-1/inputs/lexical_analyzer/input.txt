@@ -1,0 +1,5 @@
+if condicao
+  acao
+elsif condicao
+  acao
+end

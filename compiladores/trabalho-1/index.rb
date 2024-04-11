@@ -1,19 +1,25 @@
 # frozen_string_literal: true
 
-# Importações
+# Importações de bibliotecas
 require 'pry'
-require './includes/matrix'
-require './includes/automaton_archive'
-require './includes/deterministic_automaton'
-require './includes/non_deterministic_automaton'
+
+# Importações relacionadas ao automato
+require './includes/automaton/matrix'
+require './includes/automaton/automaton_archive'
+require './includes/automaton/deterministic_automaton'
+require './includes/automaton/non_deterministic_automaton'
+
+# Importações relacionadas ao analisador lexico
+require './includes/lexical_analyzer/lexical_analyzer'
+require './includes/lexical_analyzer/lexical_analyzer_archive'
 
 # Abre arquivo
-archive = AutomatonArchive.new("#{Dir.pwd}/input#{ARGV[0] ? "_#{ARGV[0]}" : ''}.txt")
-archive_data = archive.call
-# print archive_data
+automaton_archive = AutomatonArchive.new("#{Dir.pwd}/inputs/automaton/input.txt")
+automaton_archive_data = automaton_archive.call
+# print automaton_archive_data
 
 # Execução do automato indeterministico
-nda = NonDeterministicAutomaton.new(archive_data)
+nda = NonDeterministicAutomaton.new(automaton_archive_data)
 nda_data = nda.call
 # print nda_mappings
 
@@ -29,3 +35,12 @@ da_data = da.call
 # Cria matriz para impressão
 nda_matrix = Matrix.new('Automato Finito Deterministico', da_data)
 nda_matrix.call
+
+# Abre o arquivo para analise lexica
+lexical_archive = LexicalAnalyzerArchive.new("#{Dir.pwd}/inputs/lexical_analyzer/input.txt")
+lexical_archive_data = lexical_archive.call
+
+# Execução do analisador lexico
+lexical_analyzer = LexicalAnalyzer.new(lexical_archive_data, da_data)
+lexical_analyzer_data = lexical_analyzer.call
+binding.pry

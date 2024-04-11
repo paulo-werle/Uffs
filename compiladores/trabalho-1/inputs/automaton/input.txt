@@ -1,0 +1,6 @@
+if
+elsif
+end
+
+S::=cA|oA|nA|dA|iA|aA
+A::=cA|oA|nA|dA|iA|aA|£
