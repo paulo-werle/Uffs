@@ -43,7 +43,6 @@ class LexicalAnalyzer
         if @state.nil?
           record_error(line_index, simbol_line)
           @automato_control = 0
-          # @sentence = []
           next
         end
 
@@ -54,12 +53,12 @@ class LexicalAnalyzer
 
   def record_data(line, simbol)
     @simbol_table << {
-      state: @state[:row],
+      state: @state[:value],
       line: line + 1,
       simbol: simbol + 1,
       label: @sentence
     }
-    @fita << @state[:row]
+    @fita << @state[:value]
   end
 
   def record_error(line, simbol)

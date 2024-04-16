@@ -10,6 +10,7 @@ require './includes/automaton/deterministic_automaton'
 require './includes/automaton/non_deterministic_automaton'
 
 # Importações relacionadas ao analisador lexico
+require './includes/lexical_analyzer/lexical_matrix'
 require './includes/lexical_analyzer/lexical_analyzer'
 require './includes/lexical_analyzer/lexical_analyzer_archive'
 
@@ -21,7 +22,7 @@ automaton_archive_data = automaton_archive.call
 # Execução do automato indeterministico
 nda = NonDeterministicAutomaton.new(automaton_archive_data)
 nda_data = nda.call
-# print nda_mappings
+# print nda_data
 
 # Cria matriz para impressão
 nda_matrix = Matrix.new('Automato Finito Indeterministico', nda_data)
@@ -30,7 +31,7 @@ nda_matrix.call
 # Execução do automato deterministico
 da = DeterministicAutomaton.new(nda_data)
 da_data = da.call
-# print da_mappings
+# print da_data
 
 # Cria matriz para impressão
 nda_matrix = Matrix.new('Automato Finito Deterministico', da_data)
@@ -43,4 +44,7 @@ lexical_archive_data = lexical_archive.call
 # Execução do analisador lexico
 lexical_analyzer = LexicalAnalyzer.new(lexical_archive_data, da_data)
 lexical_analyzer_data = lexical_analyzer.call
-binding.pry
+
+lexical_matrix = LexicalMatrix.new(lexical_analyzer_data)
+lexical_matrix.call
+# binding.pry
