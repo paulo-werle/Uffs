@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+	<head>
+    <meta charset="utf-8">
+    <title>Three.js - OrbitControls</title>
+	</head>
+	<body>
+    <canvas id="cid"></canvas>
+  </body>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.163.0/build/three.module.js"
+      }
+  }
+  </script>
+  <script type="module">
+    import * as THREE from 'three'
+
+    import {
+      OrbitControls
+    } from 'https://unpkg.com/three@0.163.0/examples/jsm/controls/OrbitControls.js'
+
+    function main() {
+      // ###### Configurações iniciais
+      const canvas = document.querySelector('#cid')
+      const renderer = new THREE.WebGLRenderer({ antialias: true, canvas })
+      renderer.setSize((window.innerWidth - 20), (window.innerHeight - 20))
+
+      // ###### Configurações da cena
+      const scene = new THREE.Scene()
+      scene.background = new THREE.Color(0xc0c0c0)
+
+      // ###### Configurações da camera
+      const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100)
+      camera.position.set(0, -10, 2)
+      camera.lookAt(0, 0, 0)
+
+      // ###### Configurando a interação do movimento da camera
+      const controls = new OrbitControls(camera, renderer.domElement)
+      controls.rotateSpeed = 0.1
+      // Controle de zoom
+      controls.minDistance = 6
+      controls.maxDistance = 20
+      // Controle de movimentos
+      controls.maxPolarAngle =     (Math.PI /1.05)
+      controls.minPolarAngle =    ((Math.PI / 2)/ 2)
+      controls.minAzimuthAngle = -((Math.PI / 2)/ 2)
+      controls.maxAzimuthAngle =  ((Math.PI / 2)/ 2)
+      // Desativa movimento do botão esquerdo
+      controls.enablePan = false
+
+      // ###### Configurações de linhas para aorientação (TODO: Comentar ao mandar)
+      // const axesHelper = new THREE.AxesHelper()
+      // scene.add(axesHelper)
+
+      {
+        const geometry = new THREE.PlaneGeometry(30, 30)
+        const material = new THREE.MeshStandardMaterial({
+          color: 0xff0000,
+          metalness: 1,
+          roughness: 0.2,
+          emissive: 0x101010
+        })
+        const plane = new THREE.Mesh(geometry, material)
+        plane.position.set(0, 0, 0)
+        scene.add(plane)
+      }
+      {
+        // ###### Esfera no ponto de iluminação
+        const geometry = new THREE.SphereGeometry(0.1, 50, 50)
+        const material = new THREE.MeshBasicMaterial({ color: 0xfffffff })
+        const sphere = new THREE.Mesh(geometry, material)
+        sphere.position.set(1, -2, 3)
+        scene.add(sphere)
+
+        const light = new THREE.DirectionalLight(0xffffff, 100)
+        light.position.set(1, -2, 3)
+        scene.add(light)
+      }
+      {
+        // ###### Geometria e material da esfera
+        const geometry = new THREE.SphereGeometry(1, 50, 50)
+        const material = new THREE.MeshStandardMaterial({
+          color: 0xff0000,
+          metalness: 1,
+          roughness: 0.3,
+          emissive: 0x303030
+        })
+        const sphere = new THREE.Mesh(geometry, material)
+        sphere.position.set(0, 0, 1)
+        scene.add(sphere)
+      }
+
+      function render() {
+        renderer.render(scene, camera)
+        controls.update()
+        requestAnimationFrame(render)
+      }
+
+      render()
+    }
+
+    main()
+  </script>
+</html>
