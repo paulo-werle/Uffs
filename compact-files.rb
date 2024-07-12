@@ -55,12 +55,12 @@ class RepositoryNames
   def folder_name(path)
     name = File.basename(path)
 
-    name.parameterize.gsub('_', '-')
+    name.parameterize.gsub('_', '-').gsub(/([a-zA-Z])(\d)/, '\1-\2')
   end
 
   # Estrutura extenção do arquivo
   def file_extension(path)
-    File.extname(path)
+    File.extname(path).downcase
   end
 end
 
