@@ -1,3 +1,4 @@
+# Descrição:
 '''Sabendo que a tabela de imposto de renda aplica uma alíquota para as seguintes faixas de
 valores:
 • Até 1.903,98 = Isento
@@ -25,19 +26,19 @@ salariofaixa = salario1 - 4.664,68
 if salariofaixa > 0:
 	imposto = imposto * (salariofaixa*0,275)
 	salario1 = salario1 - salariofaixa
-	
+
 salariofaixa = salario1 - 3.751,06
 
 elif salariofaixa > 0:
 	imposto = imposto * (salariofaixa*0,225)
 	salario1 = salario1 - salariofaixa
-	
+
 salariofaixa = salario1 - 2.826,66
 
 elif salariofaixa > 0:
 	imposto = imposto * (salariofaixa*0,15)
 	salario1 = salario1 - salariofaixa
-	
+
 salariofaixa = salario1 - 1.903,99
 
 elif salariofaixa > 0:

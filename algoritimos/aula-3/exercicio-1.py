@@ -1,3 +1,4 @@
+# Descrição:
 '''Faça um programa que receba três números inteiros e informe qual deles é o maior e qual deles é
 o menor.'''
 
@@ -13,7 +14,7 @@ if n2 > maior:
 
 if n2 < menor:
 	menor = n2
-	
+
 n3 = int(input("Informe o Terceiro Numero  "))
 
 if n3 > maior:
@@ -21,6 +22,6 @@ if n3 > maior:
 
 if n3 < menor:
 	menor = n3
-	
+
 print("O Maior numero é: ", maior)
 print("O Menor numero é: ", menor)

@@ -1,3 +1,4 @@
+# Descrição:
 '''Uma empresa produz três tipos de peças mecânicas: parafusos, porcas e arruelas. Têm-se os
 preços unitários de cada tipo de peça (R$ 0,10, R$ 0,08, R$ 0,03, respectivamente) e sabe-se que
 sobre estes preços incidem descontos de 10% para porcas, 20% para parafusos e 30% para arruelas.
@@ -18,16 +19,16 @@ os.system("cls")
 
 if p1>0:
 	desconto = desconto + (p1*0.02)
-	
+
 if p2>0:
 	desconto = desconto + (p2*0.0008)
-	
+
 if p3>0:
 	desconto = desconto + (p3*0.0009)
 
 else:
 	print("Produto Inexistente")
-	
+
 p1 = p1 * 0.10
 p2 = p2 * 0.08
 p3 = p3 * 0.03

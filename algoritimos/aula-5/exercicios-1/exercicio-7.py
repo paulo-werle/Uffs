@@ -1,3 +1,4 @@
+# Descrição:
 '''Faça um programa que receba um número inteiro. O programa mostra a tabuada desse número.
 Ex: se o usuário informar 4 , o programa mostra o seguinte (exatamente dessa forma):
 4 x 1 = 4

@@ -1,4 +1,5 @@
-#Leia um numero e mostre seu Sucessor e seu Antecessor na tela
+# Descrição:
+# Leia um numero e mostre seu Sucessor e seu Antecessor na tela
 
 n = int(input("Informe o primeiro numero  "))
 

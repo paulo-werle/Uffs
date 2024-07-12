@@ -1,3 +1,4 @@
+# Descrição:
 '''Elabore um programa que leia as variáveis a, b e c de uma equação de segundo grau e em
 seguida, calcule suas raizes utilizando a fórmula de Bhaskara. Caso o delta for negativo, imprimir
 mensagem que a equação não possui raízes que pertencem aos número reais. Caso contrário,

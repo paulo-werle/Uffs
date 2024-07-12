@@ -1,3 +1,4 @@
+# Descrição:
 '''Elabore um programa que leia a idade de um nadador e informe sua categoria:
 Mini: menor de 5 anos
 Infantil A: de 5 a 7 anos
@@ -14,15 +15,15 @@ if (idade>=5)and(idade<=7):
 
 elif (idade>=8)and(idade<=10):
 	print("Categoria: INFANTIL B")
-	
+
 elif (idade>=11)and(idade<=13):
 	print("Categoria: JUVENIL A")
-	
+
 elif (idade>=14)and(idade<=17):
 	print("Categoria: JUVENIL B")
-	
+
 elif idade>=18:
 	print("Categoria: ADULTO")
-	
+
 else:
 	print("Categoria: INEXISTENTE")

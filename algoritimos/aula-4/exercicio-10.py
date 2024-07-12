@@ -1,3 +1,4 @@
+# Descrição:
 '''Faça um programa que receba um número inteiro que representa uma quantidade em segundos.
 A saída do programa é o equivalente dessa quantidade em dias, horas, minutos e segundos. A ideia é
 fazer um programa que calcule quanto tempo alguém esperou pelo ônibus, por exemplo: se o

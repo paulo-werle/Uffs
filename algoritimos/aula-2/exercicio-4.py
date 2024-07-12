@@ -1,4 +1,5 @@
-#Leia um valor de Hora inteira e informe na tela quantos minutos se passaram des do começo do dia
+# Descrição:
+# Leia um valor de Hora inteira e informe na tela quantos minutos se passaram des do começo do dia
 
 n = int(input("Informe o primeiro numero  "))
 

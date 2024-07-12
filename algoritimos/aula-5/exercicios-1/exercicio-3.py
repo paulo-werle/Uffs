@@ -1,3 +1,4 @@
+# Descrição:
 '''Faça um programa que leia dois números inteiros positivos (N1 e N2) e imprima o quociente
 (Quoc) e o resto (Resto) da divisão de N1 por N2, utilizando apenas as operações de adição e
 subtração.
@@ -10,6 +11,6 @@ quoc = 0
 while n1 >= n2:
 	n1 = n1-n2
 	quoc += 1
-	
+
 print("Quoc={} Resto={}".format(quoc,n1))
 
